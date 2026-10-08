@@ -28,6 +28,9 @@ class TestWebclient(ThemeTestMixin, HttpCase):
         ICP.set_param("twp_theme_settings.dark_enabled", "True")
         ICP.set_param("twp_theme_settings.staging_marker", "True")
         ICP.set_param("twp_theme_settings.dark_default", "light")
+        # Oduflow environments are neutralized copies, where the staging marker
+        # rightly overrides company colours. Tests that want it turn it back on.
+        ICP.set_param("database.is_neutralized", False)
 
     def page(self, cookies=None):
         self.authenticate("twp_theme_user", PASSWORD)

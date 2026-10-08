@@ -1,0 +1,10 @@
+// Bootstrap values that Odoo derives from white or black in ways the gray
+// swap does not reach. Loaded just before Odoo's bootstrap_overridden.scss.
+$dropdown-bg: $o-view-background-color !default;
+$tooltip-bg: $o-gray-300 !default;
+$tooltip-color: $o-main-text-color !default;
+$modal-backdrop-bg: #000000 !default;
+$box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .5) !default;
+$box-shadow-sm: 0 .125rem .25rem rgba(0, 0, 0, .4) !default;
+$box-shadow-lg: 0 1rem 3rem rgba(0, 0, 0, .5) !default;
+$form-check-input-checked-color: $o-view-background-color !default;

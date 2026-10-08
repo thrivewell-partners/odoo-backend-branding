@@ -1,0 +1,10 @@
+// Bootstrap lightens with tint-color() and darkens with shade-color(). On a
+// dark palette those directions are reversed, so subtle backgrounds stay dark
+// and emphasis text stays light.
+@function tint-color($color, $weight) {
+    @return mix(#000000, $color, $weight);
+}
+
+@function shade-color($color, $weight) {
+    @return mix(#ffffff, $color, $weight);
+}

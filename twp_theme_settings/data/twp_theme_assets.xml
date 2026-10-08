@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        The admin's theme, compiled into the backend bundles only.
+
+        Each generated file is an attachment whose url is a path inside this
+        module's static folder that does not exist on disk. ir.asset resolves
+        such a path to the attachment, the same way core serves
+        web.asset_styles_company_report.
+
+        Prepend puts the file ahead of web._assets_helpers, so its plain
+        values win over Odoo's !default ones. Sequence 100 processes these
+        after every manifest, which places them first among prepends.
+    -->
+    <record id="theme_light_scss" model="ir.attachment">
+        <field name="name">twp_theme.scss</field>
+        <field name="type">binary</field>
+        <field name="mimetype">text/scss</field>
+        <field name="url">twp_theme_settings/static/twp_theme.scss</field>
+        <field name="datas" model="twp.theme" eval="obj()._initial_b64('light')"/>
+    </record>
+    <record id="theme_dark_scss" model="ir.attachment">
+        <field name="name">twp_theme_dark.scss</field>
+        <field name="type">binary</field>
+        <field name="mimetype">text/scss</field>
+        <field name="url">twp_theme_settings/static/twp_theme_dark.scss</field>
+        <field name="datas" model="twp.theme" eval="obj()._initial_b64('dark')"/>
+    </record>
+
+    <record id="asset_theme_backend" model="ir.asset">
+        <field name="name">Backend Theme: web.assets_backend</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="directive">prepend</field>
+        <field name="path">twp_theme_settings/static/twp_theme.scss</field>
+        <field name="sequence">100</field>
+    </record>
+    <record id="asset_theme_backend_lazy" model="ir.asset">
+        <field name="name">Backend Theme: web.assets_backend_lazy</field>
+        <field name="bundle">web.assets_backend_lazy</field>
+        <field name="directive">prepend</field>
+        <field name="path">twp_theme_settings/static/twp_theme.scss</field>
+        <field name="sequence">100</field>
+    </record>
+    <record id="asset_theme_web_dark" model="ir.asset">
+        <field name="name">Backend Theme: web.assets_web_dark</field>
+        <field name="bundle">web.assets_web_dark</field>
+        <field name="directive">prepend</field>
+        <field name="path">twp_theme_settings/static/twp_theme_dark.scss</field>
+        <field name="sequence">100</field>
+    </record>
+    <record id="asset_theme_backend_lazy_dark" model="ir.asset">
+        <field name="name">Backend Theme: web.assets_backend_lazy_dark</field>
+        <field name="bundle">web.assets_backend_lazy_dark</field>
+        <field name="directive">prepend</field>
+        <field name="path">twp_theme_settings/static/twp_theme_dark.scss</field>
+        <field name="sequence">100</field>
+    </record>
+</odoo>

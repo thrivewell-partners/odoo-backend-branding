@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_company_form" model="ir.ui.view">
+        <field name="name">res.company.form.inherit.twp_theme_settings</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Backend colours" name="twp_theme" groups="base.group_system">
+                    <p class="text-muted">
+                        Optional. Overrides the theme's navbar and button colour while this
+                        company is selected. A blank dark colour follows the light one.
+                    </p>
+                    <group>
+                        <group string="Light">
+                            <field name="twp_navbar_color" widget="color"/>
+                            <field name="twp_accent_color" widget="color"/>
+                        </group>
+                        <group string="Dark">
+                            <field name="twp_navbar_color_dark" widget="color"/>
+                            <field name="twp_accent_color_dark" widget="color"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

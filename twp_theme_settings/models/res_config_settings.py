@@ -1,0 +1,105 @@
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError
+
+from .colors import is_hex
+from .twp_theme import PALETTE, PREFIX
+
+COLOR_FIELDS = [f"twp_{key}" for key in PALETTE] + [f"twp_dark_{key}" for key in PALETTE]
+
+
+class ResConfigSettings(models.TransientModel):
+    _inherit = "res.config.settings"
+
+    # Light palette. Blank keeps Odoo's own colour.
+    twp_primary = fields.Char("Primary", config_parameter=PREFIX + "primary")
+    twp_navbar = fields.Char("Navbar", config_parameter=PREFIX + "navbar")
+    twp_success = fields.Char("Success", config_parameter=PREFIX + "success")
+    twp_info = fields.Char("Info", config_parameter=PREFIX + "info")
+    twp_warning = fields.Char("Warning", config_parameter=PREFIX + "warning")
+    twp_danger = fields.Char("Danger", config_parameter=PREFIX + "danger")
+    twp_bg = fields.Char("Page background", config_parameter=PREFIX + "bg")
+    twp_view = fields.Char("Sheets", config_parameter=PREFIX + "view")
+    twp_text = fields.Char("Text", config_parameter=PREFIX + "text")
+
+    # Dark palette. Blank is worked out from the light colour.
+    twp_dark_primary = fields.Char("Primary, dark", config_parameter=PREFIX + "dark_primary")
+    twp_dark_navbar = fields.Char("Navbar, dark", config_parameter=PREFIX + "dark_navbar")
+    twp_dark_success = fields.Char("Success, dark", config_parameter=PREFIX + "dark_success")
+    twp_dark_info = fields.Char("Info, dark", config_parameter=PREFIX + "dark_info")
+    twp_dark_warning = fields.Char("Warning, dark", config_parameter=PREFIX + "dark_warning")
+    twp_dark_danger = fields.Char("Danger, dark", config_parameter=PREFIX + "dark_danger")
+    twp_dark_bg = fields.Char("Page background, dark", config_parameter=PREFIX + "dark_bg")
+    twp_dark_view = fields.Char("Sheets, dark", config_parameter=PREFIX + "dark_view")
+    twp_dark_text = fields.Char("Text, dark", config_parameter=PREFIX + "dark_text")
+
+    twp_dark_enabled = fields.Boolean(
+        "Let users switch to dark mode", config_parameter=PREFIX + "dark_enabled"
+    )
+    twp_dark_default = fields.Selection(
+        [("light", "Light"), ("dark", "Dark"), ("device", "Follow the device")],
+        string="Default for new users",
+        config_parameter=PREFIX + "dark_default",
+        default="light",
+    )
+
+    # Typography and shape. Fonts are handled in set_values: they download.
+    twp_font_body = fields.Char("Body font")
+    twp_font_head = fields.Char("Heading font")
+    twp_font_size = fields.Selection(
+        [("13", "13px"), ("14", "14px"), ("15", "15px"), ("16", "16px")],
+        string="Base font size",
+        config_parameter=PREFIX + "font_size",
+        default="14",
+    )
+    # A selection, not an integer: Odoo drops an integer setting of 0.
+    twp_radius = fields.Selection(
+        [(str(px), f"{px}px") for px in range(0, 13)],
+        string="Corner radius",
+        config_parameter=PREFIX + "radius",
+        default="4",
+    )
+
+    twp_staging_marker = fields.Boolean(
+        "Mark staging copies", config_parameter=PREFIX + "staging_marker"
+    )
+    twp_staging_color = fields.Char("Staging colour", config_parameter=PREFIX + "staging_color")
+
+    twp_contrast_warnings = fields.Text(compute="_compute_twp_contrast_warnings")
+
+    @api.depends(*COLOR_FIELDS)
+    def _compute_twp_contrast_warnings(self):
+        # Reflects the saved theme; the preview card checks unsaved edits.
+        warnings = self.env["twp.theme"]._contrast_warnings()
+        for settings in self:
+            settings.twp_contrast_warnings = "\n".join(warnings)
+
+    @api.model
+    def get_values(self):
+        res = super().get_values()
+        Theme = self.env["twp.theme"]
+        res["twp_font_body"] = Theme._param("font_body") or False
+        res["twp_font_head"] = Theme._param("font_head") or False
+        return res
+
+    def set_values(self):
+        for name in COLOR_FIELDS + ["twp_staging_color"]:
+            value = (self[name] or "").strip()
+            if value and not is_hex(value):
+                raise UserError(
+                    _("%(field)s must be a colour like #1F5F8B.", field=self._fields[name].string)
+                )
+        super().set_values()
+        Theme = self.env["twp.theme"]
+        Theme._set_font("font_body", self.twp_font_body)
+        Theme._set_font("font_head", self.twp_font_head)
+        Theme._regenerate()
+
+    def action_twp_reset_theme(self):
+        """Back to Odoo's look. Company colours are left alone."""
+        ICP = self.env["ir.config_parameter"].sudo()
+        keep = {PREFIX + "dark_enabled", PREFIX + "staging_marker", PREFIX + "staging_color"}
+        params = ICP.search([("key", "=like", PREFIX + "%"), ("key", "not in", list(keep))])
+        params.unlink()
+        self.env["twp.theme"]._unlink_font_attachments()
+        self.env["twp.theme"]._regenerate()
+        return {"type": "ir.actions.client", "tag": "reload"}

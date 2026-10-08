@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.twp_theme_settings</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Backend Theme" string="Backend Theme" name="twp_theme_settings" logo="/twp_theme_settings/static/description/icon.png" groups="base.group_system">
+                    <block title="Colours and dark mode" name="twp_colors">
+                        <setting id="twp_dark_enabled" help="Adds a Dark mode switch to each user's menu.">
+                            <field name="twp_dark_enabled"/>
+                            <div class="mt-2" invisible="not twp_dark_enabled">
+                                <label for="twp_dark_default" class="o_light_label me-2"/>
+                                <field name="twp_dark_default" class="w-auto"/>
+                            </div>
+                        </setting>
+                        <setting id="twp_contrast" string="Contrast check" help="Text and background pairs below 4.5:1, for the saved theme.">
+                            <field name="twp_contrast_warnings" readonly="1" class="text-warning" invisible="not twp_contrast_warnings"/>
+                            <div class="text-success" invisible="twp_contrast_warnings">Every pair passes.</div>
+                        </setting>
+                        <setting id="twp_color_primary" string="Primary" help="Buttons, links, active items">
+                            <div class="row mt-2">
+                                <span class="col-3 py-1">Light</span>
+                                <field name="twp_primary" widget="color" class="col-2 p-0" placeholder="Odoo default"/>
+                                <field name="twp_primary" class="col-4" placeholder="Odoo default"/>
+                            </div>
+                            <div class="row mt-1" invisible="not twp_dark_enabled">
+                                <span class="col-3 py-1">Dark</span>
+                                <field name="twp_dark_primary" widget="color" class="col-2 p-0" placeholder="Automatic"/>
+                                <field name="twp_dark_primary" class="col-4" placeholder="Automatic"/>
+                            </div>
+                        </setting>
+                        <setting id="twp_color_navbar" string="Navbar" help="The bar across the top">
+                            <div class="row mt-2">
+                                <span class="col-3 py-1">Light</span>
+                                <field name="twp_navbar" widget="color" class="col-2 p-0" placeholder="Odoo default"/>
+                                <field name="twp_navbar" class="col-4" placeholder="Odoo default"/>
+                            </div>
+                            <div class="row mt-1" invisible="not twp_dark_enabled">
+                                <span class="col-3 py-1">Dark</span>
+                                <field name="twp_dark_navbar" widget="color" class="col-2 p-0" placeholder="Automatic"/>
+                                <field name="twp_dark_navbar" class="col-4" placeholder="Automatic"/>
+                            </div>
+                        </setting>
+                        <setting id="twp_color_success" string="Success" help="Done, paid, confirmed">
+                            <div class="row mt-2">
+                                <span class="col-3 py-1">Light</span>
+                                <field name="twp_success" widget="color" class="col-2 p-0" placeholder="Odoo default"/>
+                                <field name="twp_success" class="col-4" placeholder="Odoo default"/>
+                            </div>
+                            <div class="row mt-1" invisible="not twp_dark_enabled">
+                                <span class="col-3 py-1">Dark</span>
+                                <field name="twp_dark_success" widget="color" class="col-2 p-0" placeholder="Automatic"/>
+                                <field name="twp_dark_success" class="col-4" placeholder="Automatic"/>
+                            </div>
+                        </setting>
+                        <setting id="twp_color_info" string="Info" help="Notes and neutral tags">
+                            <div class="row mt-2">
+                                <span class="col-3 py-1">Light</span>
+                                <field name="twp_info" widget="color" class="col-2 p-0" placeholder="Odoo default"/>
+                                <field name="twp_info" class="col-4" placeholder="Odoo default"/>
+                            </div>
+                            <div class="row mt-1" invisible="not twp_dark_enabled">
+                                <span class="col-3 py-1">Dark</span>
+                                <field name="twp_dark_info" widget="color" class="col-2 p-0" placeholder="Automatic"/>
+                                <field name="twp_dark_info" class="col-4" placeholder="Automatic"/>
+                            </div>
+                        </setting>
+                        <setting id="twp_color_warning" string="Warning" help="Needs attention">
+                            <div class="row mt-2">
+                                <span class="col-3 py-1">Light</span>
+                                <field name="twp_warning" widget="color" class="col-2 p-0" placeholder="Odoo default"/>
+                                <field name="twp_warning" class="col-4" placeholder="Odoo default"/>
+                            </div>
+                            <div class="row mt-1" invisible="not twp_dark_enabled">
+                                <span class="col-3 py-1">Dark</span>
+                                <field name="twp_dark_warning" widget="color" class="col-2 p-0" placeholder="Automatic"/>
+                                <field name="twp_dark_warning" class="col-4" placeholder="Automatic"/>
+                            </div>
+                        </setting>
+                        <setting id="twp_color_danger" string="Danger" help="Errors, overdue, delete">
+                            <div class="row mt-2">
+                                <span class="col-3 py-1">Light</span>
+                                <field name="twp_danger" widget="color" class="col-2 p-0" placeholder="Odoo default"/>
+                                <field name="twp_danger" class="col-4" placeholder="Odoo default"/>
+                            </div>
+                            <div class="row mt-1" invisible="not twp_dark_enabled">
+                                <span class="col-3 py-1">Dark</span>
+                                <field name="twp_dark_danger" widget="color" class="col-2 p-0" placeholder="Automatic"/>
+                                <field name="twp_dark_danger" class="col-4" placeholder="Automatic"/>
+                            </div>
+                        </setting>
+                        <setting id="twp_color_bg" string="Page background" help="Behind lists and forms">
+                            <div class="row mt-2">
+                                <span class="col-3 py-1">Light</span>
+                                <field name="twp_bg" widget="color" class="col-2 p-0" placeholder="Odoo default"/>
+                                <field name="twp_bg" class="col-4" placeholder="Odoo default"/>
+                            </div>
+                            <div class="row mt-1" invisible="not twp_dark_enabled">
+                                <span class="col-3 py-1">Dark</span>
+                                <field name="twp_dark_bg" widget="color" class="col-2 p-0" placeholder="Automatic"/>
+                                <field name="twp_dark_bg" class="col-4" placeholder="Automatic"/>
+                            </div>
+                        </setting>
+                        <setting id="twp_color_view" string="Sheets" help="Forms, lists and cards">
+                            <div class="row mt-2">
+                                <span class="col-3 py-1">Light</span>
+                                <field name="twp_view" widget="color" class="col-2 p-0" placeholder="Odoo default"/>
+                                <field name="twp_view" class="col-4" placeholder="Odoo default"/>
+                            </div>
+                            <div class="row mt-1" invisible="not twp_dark_enabled">
+                                <span class="col-3 py-1">Dark</span>
+                                <field name="twp_dark_view" widget="color" class="col-2 p-0" placeholder="Automatic"/>
+                                <field name="twp_dark_view" class="col-4" placeholder="Automatic"/>
+                            </div>
+                        </setting>
+                        <setting id="twp_color_text" string="Text" help="Body text">
+                            <div class="row mt-2">
+                                <span class="col-3 py-1">Light</span>
+                                <field name="twp_text" widget="color" class="col-2 p-0" placeholder="Odoo default"/>
+                                <field name="twp_text" class="col-4" placeholder="Odoo default"/>
+                            </div>
+                            <div class="row mt-1" invisible="not twp_dark_enabled">
+                                <span class="col-3 py-1">Dark</span>
+                                <field name="twp_dark_text" widget="color" class="col-2 p-0" placeholder="Automatic"/>
+                                <field name="twp_dark_text" class="col-4" placeholder="Automatic"/>
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="Typography and shape" name="twp_type">
+                        <setting id="twp_font_body" string="Body font" help="Any Google Font, by its family name. Blank keeps Odoo's default. Downloaded once when you save and served from this database.">
+                            <field name="twp_font_body" placeholder="Odoo default"/>
+                        </setting>
+                        <setting id="twp_font_head" string="Heading font" help="Titles, section headings, breadcrumbs. Blank matches the body font.">
+                            <field name="twp_font_head" placeholder="Same as body"/>
+                        </setting>
+                        <setting id="twp_font_size" string="Base font size" help="Odoo's default is 14px.">
+                            <field name="twp_font_size" class="w-auto"/>
+                        </setting>
+                        <setting id="twp_radius" string="Corner radius" help="Buttons, inputs and cards. Odoo's default is 4px.">
+                            <field name="twp_radius" class="w-auto"/>
+                        </setting>
+                    </block>
+                    <block title="Staging copies" name="twp_staging">
+                        <setting id="twp_staging_marker" help="On a neutralized copy, recolour the navbar and label it STAGING.">
+                            <field name="twp_staging_marker"/>
+                            <div class="row mt-2" invisible="not twp_staging_marker">
+                                <span class="col-3 py-1">Colour</span>
+                                <field name="twp_staging_color" widget="color" class="col-2 p-0"/>
+                                <field name="twp_staging_color" class="col-4" placeholder="#B7472A"/>
+                            </div>
+                        </setting>
+                        <setting id="twp_reset" string="Reset" help="Back to Odoo's colours, fonts and shape. Company colours are kept.">
+                            <button name="action_twp_reset_theme" type="object" string="Reset to Odoo defaults" class="btn-link" icon="oi-arrow-right" confirm="Reset the backend theme to Odoo's defaults?"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

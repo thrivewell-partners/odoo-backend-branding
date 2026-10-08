@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Per-company and staging colours, applied at render with no recompile. -->
+    <template id="webclient_bootstrap" inherit_id="web.webclient_bootstrap">
+        <xpath expr="//t[@t-set='head_web']" position="inside">
+            <style t-if="twp_runtime_css" id="twp_runtime_css" t-out="twp_runtime_css"/>
+        </xpath>
+    </template>
+</odoo>

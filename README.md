@@ -30,6 +30,24 @@ client's addons path on Oduflow. Design and decisions: ThriveWell's research doc
   (`models/colors.py` and the palette methods in `models/twp_theme.py`); change one, change the
   other. `TestPreviewParity` runs the JavaScript under Node against the Python.
 
+## Dark mode
+
+Odoo 19 Community compiles a dark bundle (`web.assets_web_dark`) but has no switch for it; this
+module adds the switch and fills the bundle. Three layers, all compiled from the admin's dark
+palette:
+
+* **Variables**, in the generated `..._dark.scss`: the gray scale, white and black swapped, the
+  palette, and the colours Odoo fixes for a white page: the success, info, warning and danger text
+  shades (list row decorations, `text-*`), inline code, and the navbar counter text.
+* **Bootstrap functions**, in `static/src/scss/dark/`: `tint-color` and `shade-color` reversed,
+  and dropdowns, tooltips and shadows that Odoo derives from white or black.
+* **Components**, in `static/src/scss/dark/components.dark.scss`: tag and colour-badge pills,
+  the Discuss unread counters, and links on a state-colour wash. Every text colour here is held
+  to 4.5:1; Odoo's backend sets Bootstrap's `$min-contrast-ratio` to 3, so do not use it.
+
+Spreadsheet dashboards stay light: Odoo forces o-spreadsheet to a light scheme in its own dark mode
+(`spreadsheet/static/src/o_spreadsheet/o_spreadsheet_extended.dark.scss`).
+
 ## Moving a look between databases
 
 Settings > Backend Theme > Copy and reset downloads the saved look as JSON and loads one through a
@@ -44,7 +62,7 @@ A bridge adds its settings to the file by extending `res.config.settings._twp_lo
 ```
 --test-tags /twp_theme_settings            # bundles, generation, the rendered page, login, looks, preview parity
 --test-tags /twp_theme_settings_mail       # chatter position reaches the client
---test-tags /twp_theme_settings:TestCompile    # compiles the real bundles; slow
+--test-tags /twp_theme_settings:TestCompile    # compiles the real bundles, checks dark tags and links; slow
 --test-tags twp_network                    # Google Fonts download; needs outbound HTTPS
 ```
 

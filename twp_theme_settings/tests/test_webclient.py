@@ -104,11 +104,10 @@ class TestWebclient(ThemeTestMixin, HttpCase):
             "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
         )
         self.company_b.twp_navbar_logo = png
-        info = self.env["ir.http"].with_user(self.user).session_info()
-        companies = info["user_companies"]["allowed_companies"]
-        self.assertTrue(companies[self.company_b.id]["twp_navbar_logo"])
-        self.assertFalse(companies[self.company_a.id]["twp_navbar_logo"])
-        self.authenticate("twp_theme_user", PASSWORD)
+        html = self.page()
+        entry = r'"id": %d, "name": "%s"[^}]*"twp_navbar_logo": '
+        self.assertRegex(html, entry % (self.company_b.id, self.company_b.name) + r'"\d+"')
+        self.assertRegex(html, entry % (self.company_a.id, self.company_a.name) + "false")
         url = f"/web/image/res.company/{self.company_b.id}/twp_navbar_logo"
         response = self.url_open(url)
         self.assertEqual(response.status_code, 200)

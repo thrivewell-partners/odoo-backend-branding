@@ -2,9 +2,13 @@
 // after Odoo's own rules, from the admin's dark palette. Each selector starts
 // with body so it outranks Odoo's rule whichever module loads last.
 
+// The text contrast the theme holds to, as in Settings. Odoo's backend sets
+// Bootstrap's $min-contrast-ratio to 3, which is too low for body text.
+$twp-min-contrast: 4.5;
+
 // $color moved towards white (or black on a light sheet) until it reads on
 // $background.
-@function twp-readable($color, $background, $ratio: $min-contrast-ratio) {
+@function twp-readable($color, $background, $ratio: $twp-min-contrast) {
     $target: if(lightness($background) < 50%, #ffffff, #000000);
     @for $step from 0 through 10 {
         $candidate: mix($target, $color, $step * 10%);
@@ -42,7 +46,7 @@
 // dark palette lightens.
 body .o-discuss-badge:not(.o-muted) {
     &, & .o-innerBadge {
-        color: color-contrast($o-success) !important;
+        color: color-contrast($o-success, $min-contrast-ratio: $twp-min-contrast) !important;
     }
 }
 

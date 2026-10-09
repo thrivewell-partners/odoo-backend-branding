@@ -119,6 +119,15 @@ class TestCompile(ThemeTestMixin, TransactionCase):
             fg = hex6(re.search(r"(?<![\w-])--color:\s*(#[0-9a-fA-F]{3,6})", rule.group(1)).group(1))
             self.assertGreaterEqual(contrast(fg, bg), 4.5, f"tag colour {index}")
             self.assertLess(contrast(bg, "#262A33"), 3, f"tag colour {index} is a bright patch")
+        # Links on a 25% wash of a state colour, like Website's payment banner.
+        from odoo.addons.twp_theme_settings.models.colors import mix
+        palette = self.env["twp.theme"]._dark_palette()
+        for state in ("success", "info", "warning", "danger"):
+            rule = re.search(r"body \.bg-%s\.bg-opacity-25 a:not\(\.btn\)[^{]*\{([^}]*)\}" % state, dark)
+            self.assertTrue(rule, f"no link rule on the {state} wash")
+            link = hex6(re.search(r"(?<![\w-])color:\s*(#[0-9a-fA-F]{3,6})", rule.group(1)).group(1))
+            wash = mix(palette["view"], palette[state], 0.25)
+            self.assertGreaterEqual(contrast(link, wash), 4.5, f"link on the {state} wash")
         light = self.compile("web.assets_backend")
         self.assertNotIn("body .o_tag.o_tag_color_1", light, "the dark rules leaked into light")
 

@@ -83,6 +83,8 @@ class TestGeneration(ThemeTestMixin, TransactionCase):
         link = re.search(r"\$o-main-link-color: (#[0-9A-F]{6})", light).group(1)
         self.assertGreaterEqual(contrast(link, "#357231"), 4.5)
         self.assertIn("$color-contrast-dark: #111827 !default;", light)
+        # Odoo would write the primary button's text in the sheet colour.
+        self.assertIn('("primary": (background: #36BA87, border: #36BA87, color: #111827', light)
 
     def test_settings_reject_bad_colour(self):
         settings = self.env["res.config.settings"].create({"twp_primary": "blue"})

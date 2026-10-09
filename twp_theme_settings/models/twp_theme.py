@@ -175,18 +175,43 @@ class TwpTheme(models.AbstractModel):
         return lines
 
     @api.model
-    def _contrast_lines(self, palette):
+    def _contrast_lines(self, palette, dark=False):
         """Text on coloured buttons and coloured text on sheets.
 
-        Bootstrap picks button text from these two candidates. Odoo points
-        them at its "white" and "black", which this theme may repaint, so they
-        are pinned to a real white and near-black here.
+        Bootstrap picks button text from the two contrast candidates. Odoo
+        points them at its "white" and "black", which this theme may repaint,
+        so they are pinned to a real white and near-black here.
         """
         return [
             f"$color-contrast-light: {LIGHT_INK} !default;",
             f"$color-contrast-dark: {DARK_INK} !default;",
             f"$o-main-link-color: {readable(palette['primary'], palette['view'])} !default;",
-        ]
+        ] + self._primary_button_lines(palette, dark)
+
+    @api.model
+    def _primary_button_lines(self, palette, dark):
+        """Odoo 19 writes the primary button's text as "white" whatever its
+        colour (primary_variables.scss, $o-btns-bs-override). Odoo merges its
+        map over this one, keeping our "primary" entry, so the text is the
+        readable ink instead. Plain values only: this file loads before
+        Odoo's SCSS functions.
+        """
+        primary, view = palette["primary"], palette["view"]
+        hover = mix(primary, "#FFFFFF" if dark else "#000000", 0.1)
+        pressed = mix(view, primary, 0.1)
+        entry = {
+            "background": primary,
+            "border": primary,
+            "color": ink(primary),
+            "hover-background": hover,
+            "hover-border": mix(primary, "#FFFFFF" if dark else "#000000", 0.2),
+            "hover-color": ink(hover),
+            "active-background": pressed,
+            "active-border": primary,
+            "active-color": readable(primary, pressed),
+        }
+        body = ", ".join(f"{key}: {value}" for key, value in entry.items())
+        return [f'$o-btns-bs-override: ("primary": ({body})) !default;']
 
     @api.model
     def _surface_lines(self, palette):
@@ -284,13 +309,11 @@ class TwpTheme(models.AbstractModel):
         lines += self._palette_lines(palette)
         lines += [
             f"$o-main-headings-color: {text} !default;",
-            f"$o-main-link-color: {readable(palette['primary'], view)} !default;",
-            f"$color-contrast-light: {LIGHT_INK} !default;",
-            f"$color-contrast-dark: {DARK_INK} !default;",
             f"$o-shadow-color: {palette['bg']} !default;",
             f"$o-form-lightsecondary: {grays[500]} !default;",
             f"$o-list-group-active-bg: {grays[300]} !default;",
         ]
+        lines += self._contrast_lines(palette, dark=True)
         return "\n".join(lines) + "\n"
 
     @api.model

@@ -8,7 +8,7 @@ import { FormRenderer } from "@web/views/form/form_renderer";
 
 // The admin's chatter position, from Settings > Backend Theme > Layout.
 //
-// Odoo 19 puts the chatter beside the form from the XXL breakpoint (1534px)
+// Odoo 19 puts the chatter beside the form from the XXL breakpoint (1400px)
 // and decides it in three places: the renderer's mailLayout, the controller's
 // o_xxl_form_view class and the flex direction compiled into the form. All
 // three follow mailLayout here. A document preview (vendor bills) keeps

@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="twp_theme_settings.res_config_settings_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//block[@name='twp_layout']" position="inside">
-                <setting id="twp_chatter_position" string="Chatter position" help="Where messages and activities sit on a record. Odoo puts them beside the form on screens 1534px wide and up. Beside the form starts at 1200px. Phones and tablets always show them below.">
+                <setting id="twp_chatter_position" string="Chatter position" help="Where messages and activities sit on a record. Odoo puts them beside the form on screens 1400px wide and up. Beside the form starts at 1200px. Phones and tablets always show them below.">
                     <field name="twp_chatter_position" class="w-auto"/>
                 </setting>
             </xpath>

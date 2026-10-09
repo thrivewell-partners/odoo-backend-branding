@@ -86,6 +86,18 @@ class TestGeneration(ThemeTestMixin, TransactionCase):
         # Odoo would write the primary button's text in the sheet colour.
         self.assertIn('("primary": (background: #36BA87, border: #36BA87, color: #111827', light)
 
+    def test_density_and_width(self):
+        self.set_theme(density="compact", sheet_width="wide")
+        light = self.attachment_text(self.LIGHT_URL)
+        self.assertIn("$o-table-cell-padding-y-sm: .25rem !default;", light)
+        self.assertIn("$o-form-spacing-unit: 3px !default;", light)
+        self.assertIn("$o-form-view-sheet-max-width: 1800px !default;", light)
+        self.assertNotIn("$o-form-renderer-max-width", light)
+        self.set_theme(density="comfortable", sheet_width="normal")
+        light = self.attachment_text(self.LIGHT_URL)
+        self.assertNotIn("$o-form-spacing-unit", light)
+        self.assertNotIn("sheet-max-width", light)
+
     def test_settings_reject_bad_colour(self):
         settings = self.env["res.config.settings"].create({"twp_primary": "blue"})
         with self.assertRaises(Exception):

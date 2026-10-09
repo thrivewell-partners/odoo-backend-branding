@@ -100,3 +100,10 @@ class TestCompile(ThemeTestMixin, TransactionCase):
         self.assertIn("#0e1c2e", dark.lower(), "custom dark navbar missing from compiled dark CSS")
         self.compile("web.assets_backend_lazy")
         self.compile("web.assets_backend_lazy_dark")
+
+    def test_layout_settings_compile(self):
+        self.set_theme(density="compact", sheet_width="full")
+        css = self.compile("web.assets_backend")
+        self.assertIn("max-width: 100vw", css, "full-width sheet missing from compiled CSS")
+        self.assertIn("min-width: 560px", css, "property editor lost its width")
+        self.compile("web.assets_web_dark")

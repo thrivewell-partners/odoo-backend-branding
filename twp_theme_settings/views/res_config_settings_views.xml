@@ -155,6 +155,14 @@
                         <setting id="twp_radius" string="Corner radius" help="Buttons, inputs and cards. Odoo's default is 4px.">
                             <field name="twp_radius" class="w-auto"/>
                         </setting>
+                        <setting id="twp_density" string="Density" help="Compact fits more list rows and form fields on screen.">
+                            <field name="twp_density" class="w-auto"/>
+                        </setting>
+                    </block>
+                    <block title="Layout" name="twp_layout">
+                        <setting id="twp_sheet_width" string="Form width" help="How wide a record's sheet grows on a large screen. Normal is Odoo's 1400px, wide is 1800px.">
+                            <field name="twp_sheet_width" class="w-auto"/>
+                        </setting>
                     </block>
                     <block title="Staging copies" name="twp_staging">
                         <setting id="twp_staging_marker" help="On a neutralized copy, recolour the navbar and label it STAGING.">

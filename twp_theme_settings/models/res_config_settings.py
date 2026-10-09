@@ -60,6 +60,19 @@ class ResConfigSettings(models.TransientModel):
         default="4",
     )
 
+    twp_density = fields.Selection(
+        [("comfortable", "Comfortable"), ("compact", "Compact")],
+        string="Density",
+        config_parameter=PREFIX + "density",
+        default="comfortable",
+    )
+    twp_sheet_width = fields.Selection(
+        [("normal", "Normal"), ("wide", "Wide"), ("full", "Full width")],
+        string="Form width",
+        config_parameter=PREFIX + "sheet_width",
+        default="normal",
+    )
+
     twp_staging_marker = fields.Boolean(
         "Mark staging copies", config_parameter=PREFIX + "staging_marker"
     )

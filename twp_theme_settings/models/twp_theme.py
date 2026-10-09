@@ -55,6 +55,16 @@ WOFF2_HEADERS = {
 }
 FONT_WEIGHTS = "400,400i,500,700,700i"
 
+# Compact rows and fields. Odoo's comfortable values are .5rem list cell
+# padding, a 5px form spacing unit and 24px above and below the sheet.
+COMPACT = {
+    "o-table-cell-padding-y-sm": ".25rem",
+    "o-form-spacing-unit": "3px",
+    "o-sheet-vpadding": "16px",
+}
+# Odoo's form sheet stops at 1400px. Full width is capped by the screen.
+SHEET_WIDTHS = {"wide": "1800px", "full": "100vw"}
+
 
 def derive_dark(light):
     return {
@@ -270,6 +280,26 @@ class TwpTheme(models.AbstractModel):
         return lines
 
     @api.model
+    def _layout_lines(self):
+        lines = []
+        if self._param("density") == "compact":
+            lines += [f"${name}: {value} !default;" for name, value in COMPACT.items()]
+        width = SHEET_WIDTHS.get(self._param("sheet_width"))
+        if width:
+            lines.append(f"$o-form-view-sheet-max-width: {width} !default;")
+            if self._param("sheet_width") == "full":
+                lines.append("$o-form-renderer-max-width: 100vw !default;")
+            lines += [
+                # The property editor sizes itself from the sheet width; keep
+                # it at Odoo's size.
+                "body .o_field_property_definition .o_modal_container { max-width: 700px; }",
+                "@media (min-width: 576px) {",
+                "    body .o_field_property_definition .o_modal_container { min-width: 560px; }",
+                "}",
+            ]
+        return lines
+
+    @api.model
     def _font_face_css(self):
         css = []
         for key in ("font_body", "font_head"):
@@ -294,6 +324,7 @@ class TwpTheme(models.AbstractModel):
         if changes:
             lines += self._contrast_lines(palette)
         lines += self._font_lines()
+        lines += self._layout_lines()
         lines += self._font_face_css()
         return "\n".join(lines) + "\n"
 

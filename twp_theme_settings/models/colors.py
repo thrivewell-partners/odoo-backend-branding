@@ -51,3 +51,17 @@ def ink(background):
     if contrast(background, LIGHT_INK) >= contrast(background, DARK_INK):
         return LIGHT_INK
     return DARK_INK
+
+
+def readable(color, background, ratio=4.5):
+    """``color`` moved towards white or black until it reads on ``background``.
+
+    Used for links and other coloured text, so a brand colour stays
+    recognisable but never sinks into the sheet behind it.
+    """
+    target = LIGHT_INK if ink(background) == LIGHT_INK else "#000000"
+    for step in range(11):
+        candidate = mix(color, target, step / 10)
+        if contrast(candidate, background) >= ratio:
+            return candidate
+    return ink(background)

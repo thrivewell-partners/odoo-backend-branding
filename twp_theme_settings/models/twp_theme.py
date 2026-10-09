@@ -9,7 +9,7 @@ from markupsafe import Markup
 from odoo import _, api, models
 from odoo.exceptions import UserError
 
-from .colors import LIGHT_INK, contrast, ink, is_hex, mix
+from .colors import DARK_INK, LIGHT_INK, contrast, ink, is_hex, mix, readable
 
 _logger = logging.getLogger(__name__)
 
@@ -175,6 +175,20 @@ class TwpTheme(models.AbstractModel):
         return lines
 
     @api.model
+    def _contrast_lines(self, palette):
+        """Text on coloured buttons and coloured text on sheets.
+
+        Bootstrap picks button text from these two candidates. Odoo points
+        them at its "white" and "black", which this theme may repaint, so they
+        are pinned to a real white and near-black here.
+        """
+        return [
+            f"$color-contrast-light: {LIGHT_INK} !default;",
+            f"$color-contrast-dark: {DARK_INK} !default;",
+            f"$o-main-link-color: {readable(palette['primary'], palette['view'])} !default;",
+        ]
+
+    @api.model
     def _surface_lines(self, palette):
         view, text = palette["view"], palette["text"]
         lines = [f"$o-gray-{step}: {mix(view, text, t)} !default;" for step, t in GRAY_STEPS.items()]
@@ -229,9 +243,12 @@ class TwpTheme(models.AbstractModel):
             "// Edits here are overwritten on the next save.",
         ]
         changes = self._light_changes()
+        palette = self._light_palette()
         lines += self._palette_lines(changes)
         if "view" in changes or "text" in changes:
-            lines += self._surface_lines(self._light_palette())
+            lines += self._surface_lines(palette)
+        if changes:
+            lines += self._contrast_lines(palette)
         lines += self._font_lines()
         lines += self._font_face_css()
         return "\n".join(lines) + "\n"
@@ -267,7 +284,9 @@ class TwpTheme(models.AbstractModel):
         lines += self._palette_lines(palette)
         lines += [
             f"$o-main-headings-color: {text} !default;",
-            f"$o-main-link-color: {palette['primary']} !default;",
+            f"$o-main-link-color: {readable(palette['primary'], view)} !default;",
+            f"$color-contrast-light: {LIGHT_INK} !default;",
+            f"$color-contrast-dark: {DARK_INK} !default;",
             f"$o-shadow-color: {palette['bg']} !default;",
             f"$o-form-lightsecondary: {grays[500]} !default;",
             f"$o-list-group-active-bg: {grays[300]} !default;",

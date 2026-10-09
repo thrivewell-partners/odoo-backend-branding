@@ -75,6 +75,15 @@ class TestGeneration(ThemeTestMixin, TransactionCase):
         self.assertIn("$o-main-text-color: #E5E7EB !default;", light)
         self.assertIn("$o-black: #FFFFFF !default;", light)
 
+    def test_links_stay_readable_on_the_sheet(self):
+        from odoo.addons.twp_theme_settings.models.colors import contrast
+        import re
+        self.set_theme(navbar="#36BA87", view="#357231")
+        light = self.attachment_text(self.LIGHT_URL)
+        link = re.search(r"\$o-main-link-color: (#[0-9A-F]{6})", light).group(1)
+        self.assertGreaterEqual(contrast(link, "#357231"), 4.5)
+        self.assertIn("$color-contrast-dark: #111827 !default;", light)
+
     def test_settings_reject_bad_colour(self):
         settings = self.env["res.config.settings"].create({"twp_primary": "blue"})
         with self.assertRaises(Exception):

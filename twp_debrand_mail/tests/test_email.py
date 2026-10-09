@@ -41,7 +41,8 @@ class TestEmail(MailCommon):
             html = self.render(layout)
             self.assertIn("Powered by", html, layout)
             self.assertIn(ODOO_BADGE, html, layout)
-            self.assertRegex(html, r'id="mail_unfollow">\s*\| <a href="/mail/unfollow"', layout)
+            # Odoo makes the link absolute when it renders the layout.
+            self.assertRegex(html, r'id="mail_unfollow">\s*\| <a href="[^"]*/mail/unfollow"', layout)
 
     def test_on_drops_the_badge_and_keeps_unfollow(self):
         self.switch(True)
@@ -50,7 +51,7 @@ class TestEmail(MailCommon):
             self.assertNotIn("Powered by", html, layout)
             self.assertNotIn("odoo.com", html, layout)
             self.assertIn("Your order shipped.", html, layout)
-            self.assertIn('<span id="mail_unfollow"><a href="/mail/unfollow"', html, layout)
+            self.assertRegex(html, r'<span id="mail_unfollow"><a href="[^"]*/mail/unfollow"', layout)
             self.assertEqual(html.count('id="mail_unfollow"'), 1, layout)
 
     def test_invite_layout_has_one_unfollow(self):

@@ -73,7 +73,16 @@ class TestWeb(HttpCase):
         self.name_app(APP)
         self.assertIn(f"<title>{APP}</title>", self.backend())
 
+    def website_installed(self):
+        return bool(self.env["ir.module.module"].search([("name", "=", "website"), ("state", "=", "installed")]))
+
     def test_login_title(self):
+        if self.website_installed():
+            # Website renders the login page in its own layout, which titles
+            # it "Login | <website>". That stays the website's.
+            self.name_app(APP)
+            self.assertIn("<title>Login | ", self.login_page())
+            return
         self.assertIn("<title>Odoo</title>", self.login_page())
         self.name_app(APP)
         self.assertIn(f"<title>{APP}</title>", self.login_page())
@@ -106,6 +115,13 @@ class TestWeb(HttpCase):
         self.assertNotIn("/web/static/img/favicon.ico", html)
 
     def test_login_favicon(self):
+        if self.website_installed():
+            # The website's own favicon wins on its pages, the login page included.
+            self.set_icon()
+            html = self.login_page()
+            self.assertIn('rel="shortcut icon" href="/web/image/website/', html)
+            self.assertNotIn("/twp_debrand/icon/32", html)
+            return
         self.assertIn('href="/web/static/img/favicon.ico"', self.login_page())
         icon = self.set_icon()
         self.assertIn(f'href="/twp_debrand/icon/32?unique={icon.checksum[:8]}"', self.login_page())

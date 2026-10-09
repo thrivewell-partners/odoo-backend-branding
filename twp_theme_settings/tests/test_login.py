@@ -17,7 +17,6 @@ def png(color, size=(40, 20)):
 @tagged("post_install", "-at_install", "twp_theme")
 class TestLoginPage(ThemeTestMixin, HttpCase):
     def login_page(self):
-        self.logout()
         response = self.url_open("/web/login")
         self.assertEqual(response.status_code, 200)
         return response.text

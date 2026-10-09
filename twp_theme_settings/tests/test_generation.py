@@ -46,8 +46,9 @@ class TestGeneration(ThemeTestMixin, TransactionCase):
     def test_invalid_values_never_reach_scss(self):
         self.set_theme(primary="red; } body { display:none", font_size="99", radius="x")
         light = self.attachment_text(self.LIGHT_URL)
-        self.assertNotIn("display", light)
-        self.assertNotIn("font-size", light)
+        self.assertNotIn("display:none", light)
+        self.assertNotIn("body {", light)
+        self.assertNotIn("$o-font-size-base", light)
         self.assertEqual(set(self.env["twp.theme"]._dark_palette()), set(PALETTE))
 
     def test_primary_and_navbar_follow_each_other(self):

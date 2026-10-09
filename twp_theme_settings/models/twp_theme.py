@@ -210,8 +210,27 @@ class TwpTheme(models.AbstractModel):
             "active-border": primary,
             "active-color": readable(primary, pressed),
         }
-        body = ", ".join(f"{key}: {value}" for key, value in entry.items())
-        return [f'$o-btns-bs-override: ("primary": ({body})) !default;']
+        # Outlined primary buttons ("New" beside the breadcrumb) draw their
+        # text in the primary colour on the sheet.
+        outline = {
+            "background": "transparent",
+            "border": primary,
+            "color": readable(primary, view),
+            "hover-background": primary,
+            "hover-border": primary,
+            "hover-color": ink(primary),
+            "active-background": primary,
+            "active-border": primary,
+            "active-color": ink(primary),
+        }
+
+        def scss_map(values):
+            return ", ".join(f"{key}: {value}" for key, value in values.items())
+
+        return [
+            f'$o-btns-bs-override: ("primary": ({scss_map(entry)})) !default;',
+            f'$o-btns-bs-outline-override: ("primary": ({scss_map(outline)})) !default;',
+        ]
 
     @api.model
     def _surface_lines(self, palette):

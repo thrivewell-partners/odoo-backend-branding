@@ -50,6 +50,30 @@ class TestGeneration(ThemeTestMixin, TransactionCase):
         self.assertNotIn("font-size", light)
         self.assertEqual(set(self.env["twp.theme"]._dark_palette()), set(PALETTE))
 
+    def test_primary_and_navbar_follow_each_other(self):
+        self.set_theme(navbar="#36BA87")
+        light = self.attachment_text(self.LIGHT_URL)
+        self.assertIn("$o-brand-primary: #36BA87 !default;", light)
+        self.assertIn("$o-enterprise-action-color: #36BA87 !default;", light)
+        self.set_theme(navbar="", primary="#1F5F8B")
+        light = self.attachment_text(self.LIGHT_URL)
+        self.assertIn("$o-navbar-background: #1F5F8B !default;", light)
+        self.assertIn("$o-brand-odoo: #1F5F8B !default;", light)
+
+    def test_sheet_colour_rebuilds_the_gray_scale(self):
+        self.set_theme(view="#FFF8EE")
+        light = self.attachment_text(self.LIGHT_URL)
+        self.assertIn("$o-white: #FFF8EE !default;", light)
+        self.assertIn("$o-gray-300:", light)
+        self.assertNotIn("$o-main-text-color", light, "text stays Odoo's on a light sheet")
+        self.assertNotIn("$o-black", light)
+
+    def test_dark_sheet_gets_light_text(self):
+        self.set_theme(view="#357231")
+        light = self.attachment_text(self.LIGHT_URL)
+        self.assertIn("$o-main-text-color: #E5E7EB !default;", light)
+        self.assertIn("$o-black: #FFFFFF !default;", light)
+
     def test_settings_reject_bad_colour(self):
         settings = self.env["res.config.settings"].create({"twp_primary": "blue"})
         with self.assertRaises(Exception):

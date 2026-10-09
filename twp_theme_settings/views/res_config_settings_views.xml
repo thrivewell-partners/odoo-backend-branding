@@ -33,11 +33,11 @@
                             <field name="twp_contrast_warnings" readonly="1" class="text-warning" invisible="not twp_contrast_warnings"/>
                             <div class="text-success" invisible="twp_contrast_warnings">Every pair passes.</div>
                         </setting>
-                        <setting id="twp_color_primary" string="Primary" help="Buttons, links, active items">
+                        <setting id="twp_color_primary" string="Primary" help="Buttons, links, active items. Blank follows the navbar colour.">
                             <div class="row mt-2">
                                 <span class="col-3 py-1">Light</span>
-                                <field name="twp_primary" widget="color" class="col-2 p-0" placeholder="Odoo default"/>
-                                <field name="twp_primary" class="col-4" placeholder="Odoo default"/>
+                                <field name="twp_primary" widget="color" class="col-2 p-0" placeholder="Same as navbar"/>
+                                <field name="twp_primary" class="col-4" placeholder="Same as navbar"/>
                             </div>
                             <div class="row mt-1" invisible="not twp_dark_enabled">
                                 <span class="col-3 py-1">Dark</span>
@@ -45,11 +45,11 @@
                                 <field name="twp_dark_primary" class="col-4" placeholder="Automatic"/>
                             </div>
                         </setting>
-                        <setting id="twp_color_navbar" string="Navbar" help="The bar across the top">
+                        <setting id="twp_color_navbar" string="Navbar" help="The bar across the top. Blank follows the primary colour.">
                             <div class="row mt-2">
                                 <span class="col-3 py-1">Light</span>
-                                <field name="twp_navbar" widget="color" class="col-2 p-0" placeholder="Odoo default"/>
-                                <field name="twp_navbar" class="col-4" placeholder="Odoo default"/>
+                                <field name="twp_navbar" widget="color" class="col-2 p-0" placeholder="Same as primary"/>
+                                <field name="twp_navbar" class="col-4" placeholder="Same as primary"/>
                             </div>
                             <div class="row mt-1" invisible="not twp_dark_enabled">
                                 <span class="col-3 py-1">Dark</span>
@@ -117,7 +117,7 @@
                                 <field name="twp_dark_bg" class="col-4" placeholder="Automatic"/>
                             </div>
                         </setting>
-                        <setting id="twp_color_view" string="Sheets" help="Forms, lists and cards">
+                        <setting id="twp_color_view" string="Sheets" help="Forms, lists, cards and the bar under the navbar. Tabs, borders and grey buttons are worked out from this and the text colour.">
                             <div class="row mt-2">
                                 <span class="col-3 py-1">Light</span>
                                 <field name="twp_view" widget="color" class="col-2 p-0" placeholder="Odoo default"/>
@@ -129,11 +129,11 @@
                                 <field name="twp_dark_view" class="col-4" placeholder="Automatic"/>
                             </div>
                         </setting>
-                        <setting id="twp_color_text" string="Text" help="Body text">
+                        <setting id="twp_color_text" string="Text" help="Body text. Blank picks dark or light text to suit the sheets.">
                             <div class="row mt-2">
                                 <span class="col-3 py-1">Light</span>
-                                <field name="twp_text" widget="color" class="col-2 p-0" placeholder="Odoo default"/>
-                                <field name="twp_text" class="col-4" placeholder="Odoo default"/>
+                                <field name="twp_text" widget="color" class="col-2 p-0" placeholder="Automatic"/>
+                                <field name="twp_text" class="col-4" placeholder="Automatic"/>
                             </div>
                             <div class="row mt-1" invisible="not twp_dark_enabled">
                                 <span class="col-3 py-1">Dark</span>

@@ -20,7 +20,7 @@
                 </setting>
             </xpath>
             <xpath expr="//block[@name='twp_debrand_admin']" position="inside">
-                <setting id="twp_debrand_phone_home" help="Once a week Odoo sends odoo.com the database's name and address, its number of users, its installed apps and the company's name, email and phone. On stops it.">
+                <setting id="twp_debrand_phone_home" help="Once a week Odoo sends odoo.com the database's name and address, its number of users, its installed apps and the company's name, email and phone. Ticked, nothing is sent.">
                     <field name="twp_debrand_phone_home"/>
                 </setting>
             </xpath>

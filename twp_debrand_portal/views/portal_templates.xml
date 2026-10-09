@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        "Powered by Odoo" under the sidebar of every portal quote, order and
+        invoice. It follows the core switch for "Powered by" on the portal and
+        website.
+    -->
+    <template id="portal_record_sidebar" inherit_id="portal.portal_record_sidebar" name="Branding: portal sidebar">
+        <xpath expr="//a[@href='http://www.odoo.com?utm_source=db&amp;utm_medium=portal']/.." position="attributes">
+            <attribute name="t-if">not env['twp.debrand'].sudo()._on('promotion')</attribute>
+        </xpath>
+    </template>
+</odoo>

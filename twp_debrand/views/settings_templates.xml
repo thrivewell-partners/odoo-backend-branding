@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        General Settings > About: "Odoo <version> (Community Edition)" and the
+        Odoo S.A. copyright. Hidden by the admin's switch, which sits on the same
+        settings form, so unticking it brings the box straight back. Developer
+        Tools are outside this div and stay. The upgrade offers are hidden in
+        models/settings_upsells.py, since nothing but their widget marks them.
+    -->
+    <record id="res_config_settings_view_form_about" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.twp_debrand.about</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@id='about']" position="attributes">
+                <attribute name="invisible">twp_debrand_settings</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

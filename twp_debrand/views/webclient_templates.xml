@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Every page built on web.layout: the backend, the login page and the
+        frontend pages without website. A blank app name renders "Odoo" and no
+        icon renders Odoo's favicon, as before. Website sets x_icon from its
+        own favicon and keeps winning.
+    -->
+    <template id="layout" inherit_id="web.layout" name="Branding: tab title and icon">
+        <xpath expr="//head/title" position="attributes">
+            <attribute name="t-esc">title or env['twp.debrand'].sudo()._app_name()</attribute>
+        </xpath>
+        <xpath expr="//head/link[@rel='shortcut icon']" position="before">
+            <t t-set="twp_favicon" t-value="not x_icon and env['ir.http']._twp_icon_url(32)"/>
+        </xpath>
+        <xpath expr="//head/link[@rel='shortcut icon']" position="attributes">
+            <attribute name="t-att-type">'image/png' if twp_favicon else 'image/x-icon'</attribute>
+            <attribute name="t-att-href">twp_favicon or x_icon or '/web/static/img/favicon.ico'</attribute>
+        </xpath>
+    </template>
+
+    <!-- The colour and icon a phone uses for the installed app. -->
+    <template id="webclient_bootstrap" inherit_id="web.webclient_bootstrap" name="Branding: app colour and icon">
+        <xpath expr="//t[@t-set='head_web']/meta[@name='theme-color']" position="attributes">
+            <attribute name="t-att-content">env['twp.debrand'].sudo()._theme_color()</attribute>
+        </xpath>
+        <xpath expr="//t[@t-set='head_web']/link[@rel='apple-touch-icon']" position="attributes">
+            <attribute name="t-att-href">env['ir.http']._twp_icon_url(180) or '/web/static/img/odoo-icon-ios.png'</attribute>
+        </xpath>
+    </template>
+
+    <!-- The page the installed app shows offline. Its icon comes from the controller. -->
+    <template id="webclient_offline" inherit_id="web.webclient_offline" name="Branding: offline page">
+        <xpath expr="//div[hasclass('card')]/img[@alt='Odoo logo']" position="attributes">
+            <attribute name="t-if">not twp_app_name</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('card')]/img[@alt='Odoo logo']" position="before">
+            <t t-set="twp_app_name" t-value="env['ir.config_parameter'].sudo().get_param('web.web_app_name')"/>
+            <img t-if="twp_app_name" t-attf-src="data:image/png;base64,{{odoo_icon}}" t-att-alt="twp_app_name"/>
+        </xpath>
+        <xpath expr="//div[hasclass('card')]/p" position="attributes">
+            <attribute name="t-if">not twp_app_name</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('card')]/p" position="before">
+            <p t-if="twp_app_name">Check your network connection and come back here. <t t-esc="twp_app_name"/> will load as soon as you're back online.</p>
+        </xpath>
+    </template>
+
+    <!--
+        The tab title of a report opened in the browser. Like snailmail's
+        extension of the same layout, it does not assume env is there.
+    -->
+    <template id="report_layout" inherit_id="web.report_layout" name="Branding: report title">
+        <xpath expr="//head/title/t" position="attributes">
+            <attribute name="t-esc">title or '%s Report' % (env['twp.debrand'].sudo()._app_name() if env else 'Odoo')</attribute>
+        </xpath>
+    </template>
+    <template id="report_preview_layout" inherit_id="web.report_preview_layout" name="Branding: report preview title">
+        <xpath expr="//head/title/t" position="attributes">
+            <attribute name="t-esc">title or '%s Report' % (env['twp.debrand'].sudo()._app_name() if env else 'Odoo')</attribute>
+        </xpath>
+    </template>
+
+    <!--
+        "Powered by Odoo" in the frontend footer, on website and shop pages and
+        in surveys. They all end in this one template, which any page can call,
+        including one rendered without env.
+    -->
+    <template id="brand_promotion_message" inherit_id="web.brand_promotion_message" name="Branding: Powered by">
+        <xpath expr="//t[@t-out]" position="attributes">
+            <attribute name="t-if">not (env and env['twp.debrand'].sudo()._on('promotion'))</attribute>
+        </xpath>
+    </template>
+</odoo>

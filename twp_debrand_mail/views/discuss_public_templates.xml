@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- The public Discuss page (meeting and channel links): tab title and icon. -->
+    <template id="discuss_public_channel_template" inherit_id="mail.discuss_public_channel_template">
+        <xpath expr="//title" position="attributes">
+            <attribute name="t-esc">title or env['twp.debrand'].sudo()._app_name()</attribute>
+        </xpath>
+        <xpath expr="//link[@rel='shortcut icon']" position="attributes">
+            <attribute name="t-att-href">x_icon or env['ir.http']._twp_icon_url(32) or '/web/static/img/favicon.ico'</attribute>
+        </xpath>
+    </template>
+</odoo>

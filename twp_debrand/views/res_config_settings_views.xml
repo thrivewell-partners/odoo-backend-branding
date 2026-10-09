@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Settings > Branding. One switch per place Odoo shows its own name.
+        Bridges add their rows to these blocks by name: twp_debrand_pages for
+        pages people see, twp_debrand_admin for what only the admin sees, and
+        their own blocks after it.
+    -->
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.twp_debrand</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Branding" string="Branding" name="twp_debrand" logo="/twp_debrand/static/description/icon.png" groups="base.group_system">
+                    <block title="Name and icons" name="twp_debrand_identity">
+                        <setting id="twp_debrand_app_name" string="App name" help='Replaces "Odoo" in the browser tab, dialog titles and the installable app. Blank keeps "Odoo".'>
+                            <field name="web_app_name" placeholder="Odoo"/>
+                        </setting>
+                        <setting id="twp_debrand_icons" string="Icons" help="The browser tab icon, and the icon of the installed app on phones and desktops. A square image, 512px or larger. Blank keeps Odoo's. A website keeps its own favicon.">
+                            <field name="twp_debrand_icon" widget="image" class="w-auto" options="{'size': [64, 64]}"/>
+                            <div class="mt-2">
+                                <label for="twp_debrand_theme_color" class="o_light_label me-2"/>
+                                <field name="twp_debrand_theme_color" widget="color" class="w-auto" placeholder="#71639e"/>
+                                <field name="twp_debrand_theme_color" class="w-auto ms-2" placeholder="Odoo's purple"/>
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="Pages" name="twp_debrand_pages">
+                        <setting id="twp_debrand_user_menu" help="Takes Help and My Odoo.com Account out of each user's menu. With a support link, Help stays and opens it.">
+                            <field name="twp_debrand_user_menu"/>
+                            <div class="mt-2" invisible="not twp_debrand_user_menu">
+                                <label for="twp_debrand_support_url" class="o_light_label me-2"/>
+                                <field name="twp_debrand_support_url" placeholder="https://support.example.com"/>
+                            </div>
+                        </setting>
+                        <setting id="twp_debrand_login" string="Login page" help="The footer under the login form.">
+                            <div class="d-flex"><field name="twp_debrand_login_powered"/><label for="twp_debrand_login_powered" class="o_light_label ms-2"/></div>
+                            <div class="d-flex"><field name="twp_debrand_login_databases"/><label for="twp_debrand_login_databases" class="o_light_label ms-2"/></div>
+                        </setting>
+                        <setting id="twp_debrand_promotion" help="The footer badge on portal pages, the website and surveys.">
+                            <field name="twp_debrand_promotion"/>
+                        </setting>
+                    </block>
+                    <block title="For the admin" name="twp_debrand_admin">
+                        <setting id="twp_debrand_settings" help="The About box in General Settings, settings that only open an Enterprise upgrade offer, Enterprise apps and the app store menus in Apps, and Enterprise payment providers.">
+                            <field name="twp_debrand_settings"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

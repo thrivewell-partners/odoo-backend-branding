@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.twp_debrand_mail</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="twp_debrand.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@name='twp_debrand_identity']" position="inside">
+                <setting id="twp_debrand_bot" string="OdooBot" help="The system user that posts automatic messages. Blank name and no avatar keep Odoo's.">
+                    <field name="twp_debrand_bot_avatar" widget="image" class="w-auto" options="{'size': [64, 64]}"/>
+                    <div class="mt-2">
+                        <label for="twp_debrand_bot_name" string="Name" class="o_light_label me-2"/>
+                        <field name="twp_debrand_bot_name" placeholder="OdooBot"/>
+                    </div>
+                </setting>
+            </xpath>
+            <xpath expr="//block[@name='twp_debrand_pages']" position="inside">
+                <setting id="twp_debrand_email" help="The line at the foot of emails sent from this database. The unfollow link stays.">
+                    <field name="twp_debrand_email"/>
+                </setting>
+            </xpath>
+            <xpath expr="//block[@name='twp_debrand_admin']" position="inside">
+                <setting id="twp_debrand_phone_home" help="Once a week Odoo sends odoo.com the database's name and address, its number of users, its installed apps and the company's name, email and phone. On stops it.">
+                    <field name="twp_debrand_phone_home"/>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+</odoo>

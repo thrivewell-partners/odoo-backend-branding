@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        "Powered by Odoo" at the foot of notification emails, behind
+        Settings > Branding > Pages. The line is loose text in Odoo's footer, so
+        the footer is hidden whole and the unfollow link (span#mail_unfollow,
+        which mail_notification_invite replaces and mail.mail matches with
+        _UNFOLLOW_REGEX) is captured once and shown in either place. Odoo's own
+        nodes are moved, not retyped, so their translations still apply.
+        Rendered with minimal_qcontext: no env, but company is always there.
+    -->
+    <template id="mail_notification_layout" inherit_id="mail.mail_notification_layout">
+        <xpath expr="//span[@id='mail_unfollow']" position="replace" mode="inner">
+            <t t-if="not twp_debrand_email">| </t><xpath expr="//span[@id='mail_unfollow']/a" position="move"/>
+        </xpath>
+        <xpath expr="//div[span[@id='mail_unfollow']]" position="before">
+            <t t-set="twp_debrand_email" t-value="company.env['twp.debrand']._on('email')"/>
+            <t t-set="twp_debrand_unfollow"/>
+        </xpath>
+        <xpath expr="//div[span[@id='mail_unfollow']]" position="inside">
+            <t t-out="twp_debrand_unfollow"/>
+        </xpath>
+        <xpath expr="//div[span[@id='mail_unfollow']]" position="after">
+            <div t-if="show_footer and twp_debrand_email and twp_debrand_unfollow.strip()" style="color: #555555; font-size:11px;">
+                <t t-out="twp_debrand_unfollow"/>
+            </div>
+        </xpath>
+        <xpath expr="//div[span[@id='mail_unfollow']]" position="attributes">
+            <attribute name="t-if">show_footer and not twp_debrand_email</attribute>
+        </xpath>
+        <xpath expr="//t[@t-set='twp_debrand_unfollow']" position="inside">
+            <xpath expr="//span[@id='mail_unfollow']" position="move"/>
+        </xpath>
+    </template>
+
+    <template id="mail_notification_light" inherit_id="mail.mail_notification_light">
+        <xpath expr="//span[@id='mail_unfollow']" position="replace" mode="inner">
+            <t t-if="not twp_debrand_email">| </t><xpath expr="//span[@id='mail_unfollow']/a" position="move"/>
+        </xpath>
+        <xpath expr="//tr[td/span[@id='mail_unfollow']]" position="before">
+            <t t-set="twp_debrand_email" t-value="company.env['twp.debrand']._on('email')"/>
+            <t t-set="twp_debrand_unfollow"/>
+        </xpath>
+        <xpath expr="//td[span[@id='mail_unfollow']]" position="inside">
+            <t t-out="twp_debrand_unfollow"/>
+        </xpath>
+        <xpath expr="//tr[td/span[@id='mail_unfollow']]" position="after">
+            <tr t-if="twp_debrand_email and twp_debrand_unfollow.strip()"><td align="center" style="min-width: 590px;">
+                <t t-out="twp_debrand_unfollow"/>
+            </td></tr>
+        </xpath>
+        <xpath expr="//tr[td/span[@id='mail_unfollow']]" position="attributes">
+            <attribute name="t-if">not twp_debrand_email</attribute>
+        </xpath>
+        <xpath expr="//t[@t-set='twp_debrand_unfollow']" position="inside">
+            <xpath expr="//span[@id='mail_unfollow']" position="move"/>
+        </xpath>
+    </template>
+</odoo>

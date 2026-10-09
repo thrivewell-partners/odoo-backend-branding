@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        The Backend Theme's login page has its own copy of Odoo's footer. The
+        same two Branding switches apply to it, read at render time.
+    -->
+    <template id="login_footer" inherit_id="twp_theme_settings.login_footer" name="Branding: Backend Theme login footer">
+        <xpath expr="//div[hasclass('o_twp_login_footer')]" position="before">
+            <t t-set="twp_hide_powered" t-value="env['twp.debrand'].sudo()._on('login_powered')"/>
+            <t t-set="twp_hide_databases" t-value="env['twp.debrand'].sudo()._on('login_databases')"/>
+        </xpath>
+        <!-- No footer at all, rather than an empty one under its border. -->
+        <xpath expr="//div[hasclass('o_twp_login_footer')]" position="attributes">
+            <attribute name="t-if">not disable_footer and not (twp_hide_powered and (twp_hide_databases or disable_database_manager))</attribute>
+        </xpath>
+        <xpath expr="//t[@t-if='not disable_database_manager']" position="attributes">
+            <attribute name="t-if">not disable_database_manager and not twp_hide_databases</attribute>
+        </xpath>
+        <!-- Its right border separates it from "Powered by", so it goes with it. -->
+        <xpath expr="//a[@href='/web/database/manager']" position="attributes">
+            <attribute name="t-att-class">'me-1' if twp_hide_powered else 'border-end pe-2 me-1'</attribute>
+        </xpath>
+        <xpath expr="//a[@href='https://www.odoo.com?utm_source=db&amp;utm_medium=auth']" position="attributes">
+            <attribute name="t-if">not twp_hide_powered</attribute>
+        </xpath>
+    </template>
+</odoo>

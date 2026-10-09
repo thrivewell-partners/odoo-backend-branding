@@ -1,19 +1,23 @@
 // The preview card at the top of Settings > Backend Theme. Its colours come
 // from CSS variables the widget sets from the form, not from the compiled
 // theme, so it shows unsaved edits.
-.o_twp_preview {
-    // Stays in view while the admin scrolls the Backend Theme settings.
+// Stays in view while the admin scrolls the Backend Theme settings. The
+// sticky element is Odoo's wrapper round the widget, a child of the app.
+.o_widget_twp_theme_preview {
     position: sticky;
     top: 0;
     z-index: 2;
-    margin: 0 0 1rem;
-    padding: .5rem .75rem .75rem;
-    background: $o-view-background-color;
-    border-bottom: 1px solid $border-color;
 
     @include media-breakpoint-down(lg) {
         position: static;
     }
+}
+
+.o_twp_preview {
+    margin: 0 0 1rem;
+    padding: .5rem .75rem .75rem;
+    background: $o-view-background-color;
+    border-bottom: 1px solid $border-color;
 
     .o_twp_preview_panes {
         display: grid;
@@ -28,10 +32,6 @@
 
     .o_twp_preview_foot {
         margin-top: .5rem;
-
-        ul {
-            padding-inline-start: 1.25rem;
-        }
     }
 }
 

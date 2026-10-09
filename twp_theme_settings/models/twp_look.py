@@ -77,7 +77,7 @@ class TwpTheme(models.AbstractModel):
             return False
 
         def refuse():
-            raise UserError(_("The look file has an unusable value for %(setting)s.", setting=key))
+            raise UserError(self.env._("The look file has an unusable value for %(setting)s.", setting=key))
 
         if field.type == "boolean":
             if not isinstance(value, bool):
@@ -128,6 +128,17 @@ class TwpTheme(models.AbstractModel):
             _("Fonts: %(fonts)s, downloaded from Google Fonts when you load the look.", fonts=", ".join(fonts))
             if fonts else _("Fonts: Odoo's own.")
         )
+        settings_fields = self.env["res.config.settings"]._fields
+
+        def label(name):
+            value = values[name] or settings_fields[name].default(self)
+            return dict(settings_fields[name]._description_selection(self.env)).get(value, value)
+
+        lines.append(_(
+            "Text %(size)s, corners %(radius)s, %(density)s rows, %(width)s forms.",
+            size=label("twp_font_size"), radius=label("twp_radius"),
+            density=label("twp_density").lower(), width=label("twp_sheet_width").lower(),
+        ))
         lines.append(
             _("Dark mode switch: on.") if values["twp_dark_enabled"] else _("Dark mode switch: off.")
         )

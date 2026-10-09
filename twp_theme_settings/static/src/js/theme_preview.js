@@ -76,7 +76,7 @@ export class ThemePreview extends Component {
             .filter((w) => this.darkEnabled || w.scheme === "light")
             .map((w) => ({
                 key: `${w.scheme}_${w.pair}`,
-                text: _t("%(scheme)s: %(pair)s is %(ratio)s:1, below 4.5:1", {
+                text: _t("%(scheme)s %(pair)s %(ratio)s:1", {
                     scheme: w.scheme === "dark" ? _t("Dark") : _t("Light"),
                     pair: PAIRS[w.pair],
                     ratio: w.ratio.toFixed(1),

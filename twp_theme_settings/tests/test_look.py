@@ -132,6 +132,7 @@ class TestLook(ThemeTestMixin, HttpCase):
         self.assertFalse(wizard.look_error)
         self.assertIn("primary #1F5F8B", wizard.summary)
         self.assertIn("Branded login page: on.", wizard.summary)
+        self.assertIn("Text 15px, corners 0px, compact rows, wide forms.", wizard.summary)
         self.assertEqual(wizard.action_load()["tag"], "reload")
         self.assertEqual(self.params().get("login_heading"), "Welcome to Northfield")
 

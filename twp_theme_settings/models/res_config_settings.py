@@ -1,5 +1,6 @@
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
+from odoo.http import request
 
 from .colors import is_hex
 from .twp_theme import PALETTE, PREFIX
@@ -65,6 +66,9 @@ class ResConfigSettings(models.TransientModel):
     twp_staging_color = fields.Char("Staging colour", config_parameter=PREFIX + "staging_color")
 
     twp_contrast_warnings = fields.Text(compute="_compute_twp_contrast_warnings")
+    # Explain why a saved colour may not be what the admin sees right now.
+    twp_viewing_dark = fields.Boolean(compute="_compute_twp_viewing")
+    twp_is_staging_copy = fields.Boolean(compute="_compute_twp_viewing")
 
     @api.depends(*COLOR_FIELDS)
     def _compute_twp_contrast_warnings(self):
@@ -72,6 +76,15 @@ class ResConfigSettings(models.TransientModel):
         warnings = self.env["twp.theme"]._contrast_warnings()
         for settings in self:
             settings.twp_contrast_warnings = "\n".join(warnings)
+
+    def _compute_twp_viewing(self):
+        dark = bool(request) and self.env["ir.http"].color_scheme() == "dark"
+        neutralized = bool(
+            self.env["ir.config_parameter"].sudo().get_param("database.is_neutralized")
+        )
+        for settings in self:
+            settings.twp_viewing_dark = dark
+            settings.twp_is_staging_copy = neutralized
 
     @api.model
     def get_values(self):

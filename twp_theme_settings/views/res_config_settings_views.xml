@@ -8,6 +8,20 @@
             <xpath expr="//form" position="inside">
                 <app data-string="Backend Theme" string="Backend Theme" name="twp_theme_settings" logo="/twp_theme_settings/static/description/icon.png" groups="base.group_system">
                     <block title="Colours and dark mode" name="twp_colors">
+                        <div class="col-12 px-3" invisible="not twp_viewing_dark and not (twp_is_staging_copy and twp_staging_marker)">
+                            <div class="alert alert-info mb-0" role="status">
+                                <div invisible="not twp_viewing_dark">
+                                    You are viewing the backend in dark mode, so it shows the
+                                    <b>Dark</b> colours. Light colours show in light mode; switch from
+                                    your user menu to check them.
+                                </div>
+                                <div invisible="not twp_is_staging_copy or not twp_staging_marker">
+                                    This database is a staging copy, so the navbar shows the staging
+                                    colour instead of the navbar colour below. Untick
+                                    <b>Mark staging copies</b> to see it here.
+                                </div>
+                            </div>
+                        </div>
                         <setting id="twp_dark_enabled" help="Adds a Dark mode switch to each user's menu.">
                             <field name="twp_dark_enabled"/>
                             <div class="mt-2" invisible="not twp_dark_enabled">

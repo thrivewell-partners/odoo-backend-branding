@@ -124,7 +124,13 @@ class TwpTheme(models.AbstractModel):
         lines = []
         if "primary" in palette:
             lines.append(f"$o-brand-primary: {palette['primary']} !default;")
+            # Odoo uses its Enterprise teal directly for selection outlines in
+            # the colour picker, badges, signatures and the messaging menu.
+            lines.append(f"$o-enterprise-action-color: {palette['primary']} !default;")
         if "navbar" in palette:
+            # $o-brand-odoo also colours the loading bar, the export dialog
+            # and the mobile search header.
+            lines.append(f"$o-brand-odoo: {palette['navbar']} !default;")
             lines += self._navbar_lines(palette["navbar"])
         for key in ("success", "info", "warning", "danger"):
             if key in palette:
@@ -212,7 +218,6 @@ class TwpTheme(models.AbstractModel):
         lines += [f"$o-gray-{step}: {value} !default;" for step, value in grays.items()]
         lines += self._palette_lines(palette)
         lines += [
-            f"$o-brand-odoo: {palette['navbar']} !default;",
             f"$o-main-headings-color: {text} !default;",
             f"$o-main-link-color: {palette['primary']} !default;",
             f"$o-shadow-color: {palette['bg']} !default;",
@@ -399,11 +404,21 @@ class TwpTheme(models.AbstractModel):
             navbar = stg.upper() if is_hex(stg) else "#B7472A"
         if navbar:
             text = ink(navbar)
+            # The menu entries carry their own background, so the variables
+            # Odoo reads for them are set along with the bar itself.
+            hover = mix(navbar, "#FFFFFF" if scheme == "dark" else "#000000", 0.1)
             rules.append(
                 f".o_main_navbar{{background:{navbar}!important;"
                 f"border-bottom-color:{mix(navbar, '#000000', 0.18)}!important;"
-                f"--NavBar-entry-color:{text};--NavBar-entry-color--hover:{text};}}"
+                f"--NavBar-entry-color:{text};--NavBar-entry-color--hover:{text};"
+                f"--NavBar-entry-color--active:{text};--NavBar-brand-color:{text};"
+                f"--NavBar-entry-backgroundColor:{navbar};"
+                f"--NavBar-entry-backgroundColor--hover:{hover};"
+                f"--NavBar-entry-backgroundColor--focus:{hover};"
+                f"--NavBar-entry-backgroundColor--active:{hover};}}"
                 f".o_main_navbar .o_menu_brand{{color:{text}!important;}}"
+                f".o_web_client{{--mobileSearch__header-bg:{navbar};}}"
+                f".o_loading_indicator{{background-color:{navbar}!important;}}"
             )
         if staging:
             rules.append(

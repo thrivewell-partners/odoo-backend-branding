@@ -18,6 +18,8 @@
 // Tags and colour badges. Odoo draws a pastel pill with dark text in each of
 // its twelve colours; on a dark page that is a row of bright patches. Here the
 // pill is the colour sunk into the sheet and the text is the colour lifted.
+// Odoo prints tags as "background-color: var(--background-color) !important"
+// (o-print-color), so the tag rule sets those variables instead.
 @for $size from 1 through length($o-colors) {
     $-color: nth($o-colors, $size);
     $-bg: mix($-color, $o-view-background-color, 30%);
@@ -25,8 +27,8 @@
 
     body .o_tag.o_tag_color_#{$size - 1} {
         &, &::after {
-            background-color: $-bg;
-            color: $-text;
+            --background-color: #{$-bg};
+            --color: #{$-text};
         }
     }
 

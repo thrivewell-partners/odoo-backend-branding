@@ -114,8 +114,9 @@ class TestCompile(ThemeTestMixin, TransactionCase):
         for index in range(12):
             rule = re.search(r"body \.o_tag\.o_tag_color_%d\b[^{]*\{([^}]*)\}" % index, dark)
             self.assertTrue(rule, f"tag colour {index} has no dark rule")
-            bg = hex6(re.search(r"background-color:\s*(#[0-9a-fA-F]{3,6})", rule.group(1)).group(1))
-            fg = hex6(re.search(r"(?<!-)color:\s*(#[0-9a-fA-F]{3,6})", rule.group(1)).group(1))
+            # Odoo's own tag rule reads these through var() with !important.
+            bg = hex6(re.search(r"--background-color:\s*(#[0-9a-fA-F]{3,6})", rule.group(1)).group(1))
+            fg = hex6(re.search(r"(?<![\w-])--color:\s*(#[0-9a-fA-F]{3,6})", rule.group(1)).group(1))
             self.assertGreaterEqual(contrast(fg, bg), 4.5, f"tag colour {index}")
             self.assertLess(contrast(bg, "#262A33"), 3, f"tag colour {index} is a bright patch")
         light = self.compile("web.assets_backend")

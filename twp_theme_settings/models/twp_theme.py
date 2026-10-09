@@ -35,6 +35,11 @@ ODOO_LIGHT = {
     "text": "#212529",
 }
 DARK_NEUTRALS = {"bg": "#17191F", "view": "#20232B", "text": "#E5E7EB"}
+# Odoo's text-success, text-info and so on are not the state colours but darker
+# shades tuned to read on white ($o-theme-text-colors), and inline code has
+# its own pink. Both are fixed values that sink into a dark sheet.
+ODOO_TEXT = {"success": "#008818", "info": "#0180A5", "warning": "#9A6B01", "danger": "#D23F3A"}
+ODOO_CODE = "#D2317B"
 # Odoo's gray scale is its sheet colour (white) moving towards its text colour
 # by these fractions: gray-100 #F8F9FA through gray-800 #343A40. Rebuilding
 # the scale from the admin's sheet and text colours keeps tabs, secondary
@@ -247,6 +252,35 @@ class TwpTheme(models.AbstractModel):
         ]
 
     @api.model
+    def _state_text_lines(self, palette, changes=None):
+        """Coloured text (list row decorations, text-success, remaining days)
+        and the unread counters, readable on the sheet.
+
+        The dark file always writes them. The light file writes them only when
+        the admin has changed a state colour or the sheet, so a blank light
+        theme keeps Odoo's tuned shades.
+        """
+        view = palette["view"]
+        keys = tuple(ODOO_TEXT)
+        lines = []
+        if changes is None or changes.keys() & {*keys, "view"}:
+            entries = []
+            for key in keys:
+                base = palette[key] if changes is None or key in changes else ODOO_TEXT[key]
+                entries.append(f'"{key}": {readable(base, view)}')
+            lines.append(f"$o-theme-text-colors: ({', '.join(entries)}) !default;")
+        if changes is None or "view" in changes:
+            lines.append(f"$o-main-code-color: {readable(ODOO_CODE, view)} !default;")
+        if changes is None or "success" in changes:
+            # Odoo prints the navbar counters in white on the success colour,
+            # with a shadow drawn in "black", which the dark file turns white.
+            badge = ink(palette["success"])
+            lines.append(f"$o-navbar-badge-color: {badge} !default;")
+            if changes is None or badge == DARK_INK:
+                lines.append("$o-navbar-badge-text-shadow: none !default;")
+        return lines
+
+    @api.model
     def _surface_lines(self, palette):
         view, text = palette["view"], palette["text"]
         lines = [f"$o-gray-{step}: {mix(view, text, t)} !default;" for step, t in GRAY_STEPS.items()]
@@ -327,6 +361,7 @@ class TwpTheme(models.AbstractModel):
             lines += self._surface_lines(palette)
         if changes:
             lines += self._contrast_lines(palette)
+            lines += self._state_text_lines(palette, changes)
         lines += self._font_lines()
         lines += self._layout_lines()
         lines += self._font_face_css()
@@ -368,6 +403,7 @@ class TwpTheme(models.AbstractModel):
             f"$o-list-group-active-bg: {grays[300]} !default;",
         ]
         lines += self._contrast_lines(palette, dark=True)
+        lines += self._state_text_lines(palette)
         return "\n".join(lines) + "\n"
 
     @api.model

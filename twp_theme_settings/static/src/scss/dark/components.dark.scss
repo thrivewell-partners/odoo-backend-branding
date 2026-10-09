@@ -1,0 +1,55 @@
+// Components Odoo colours for a white page only. Compiled in the dark bundle
+// after Odoo's own rules, from the admin's dark palette. Each selector starts
+// with body so it outranks Odoo's rule whichever module loads last.
+
+// $color moved towards white (or black on a light sheet) until it reads on
+// $background.
+@function twp-readable($color, $background, $ratio: $min-contrast-ratio) {
+    $target: if(lightness($background) < 50%, #ffffff, #000000);
+    @for $step from 0 through 10 {
+        $candidate: mix($target, $color, $step * 10%);
+        @if contrast-ratio($background, $candidate) >= $ratio {
+            @return $candidate;
+        }
+    }
+    @return $target;
+}
+
+// Tags and colour badges. Odoo draws a pastel pill with dark text in each of
+// its twelve colours; on a dark page that is a row of bright patches. Here the
+// pill is the colour sunk into the sheet and the text is the colour lifted.
+@for $size from 1 through length($o-colors) {
+    $-color: nth($o-colors, $size);
+    $-bg: mix($-color, $o-view-background-color, 30%);
+    $-text: twp-readable(mix(#ffffff, $-color, 45%), $-bg);
+
+    body .o_tag.o_tag_color_#{$size - 1} {
+        &, &::after {
+            background-color: $-bg;
+            color: $-text;
+        }
+    }
+
+    body .badge.o_badge_color_#{$size - 1} {
+        background-color: $-bg !important;
+        color: $-text !important;
+    }
+}
+
+// Unread counters in Discuss print white on the success colour, which the
+// dark palette lightens.
+body .o-discuss-badge:not(.o-muted) {
+    &, & .o-innerBadge {
+        color: color-contrast($o-success) !important;
+    }
+}
+
+// Links on a 25% wash of a state colour, such as the payment banner at the
+// top of Website settings.
+@each $-state, $-color in (success: $o-success, info: $o-info, warning: $o-warning, danger: $o-danger) {
+    body .bg-#{$-state}.bg-opacity-25 {
+        a:not(.btn), .btn-link {
+            color: twp-readable($o-main-link-color, mix($-color, $o-view-background-color, 25%));
+        }
+    }
+}

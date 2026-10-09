@@ -7,6 +7,11 @@ from .common import ThemeTestMixin
 
 @tagged("post_install", "-at_install", "twp_theme")
 class TestGeneration(ThemeTestMixin, TransactionCase):
+    def clear_theme(self):
+        self.env["ir.config_parameter"].sudo().search(
+            [("key", "=like", "twp_theme_settings.%")]
+        ).unlink()
+
     def attachment_text(self, url):
         return self.env["ir.attachment"].sudo().search([("url", "=", url)]).raw.decode()
 
@@ -85,6 +90,47 @@ class TestGeneration(ThemeTestMixin, TransactionCase):
         self.assertIn("$color-contrast-dark: #111827 !default;", light)
         # Odoo would write the primary button's text in the sheet colour.
         self.assertIn('("primary": (background: #36BA87, border: #36BA87, color: #111827', light)
+
+    def state_text(self, scss):
+        import re
+        found = re.search(r"\$o-theme-text-colors: \(([^)]*)\)", scss)
+        if not found:
+            return None
+        return dict(re.findall(r'"(\w+)": (#[0-9A-F]{6})', found.group(1)))
+
+    def test_dark_state_text_reads_on_the_sheet(self):
+        """text-success, list row decorations and remaining days are Odoo's
+        fixed dark shades unless the dark file replaces them."""
+        from odoo.addons.twp_theme_settings.models.colors import DARK_INK, contrast, ink
+        self.clear_theme()
+        self.set_theme(success="#2E7D4F", dark_view="#262A33")
+        Theme = self.env["twp.theme"]
+        dark_palette = Theme._dark_palette()
+        dark = self.attachment_text(self.DARK_URL)
+        text = self.state_text(dark)
+        self.assertEqual(set(text), {"success", "info", "warning", "danger"})
+        for key, value in text.items():
+            self.assertGreaterEqual(contrast(value, "#262A33"), 4.5, key)
+        self.assertIn(f"$o-navbar-badge-color: {ink(dark_palette['success'])} !default;", dark)
+        self.assertEqual(ink(dark_palette["success"]), DARK_INK, "white on a lightened green")
+        self.assertIn("$o-navbar-badge-text-shadow: none !default;", dark)
+        code = dark.split("$o-main-code-color: ")[1][:7]
+        self.assertGreaterEqual(contrast(code, "#262A33"), 4.5)
+
+    def test_light_state_text_is_odoos_until_changed(self):
+        self.clear_theme()
+        self.set_theme(primary="#1F5F8B")
+        light = self.attachment_text(self.LIGHT_URL)
+        self.assertIsNone(self.state_text(light), "Odoo's tuned shades stay")
+        self.assertNotIn("$o-navbar-badge-color", light)
+        self.assertNotIn("$o-main-code-color", light)
+
+        self.set_theme(success="#7CD992")
+        text = self.state_text(self.attachment_text(self.LIGHT_URL))
+        self.assertEqual(text["info"], "#0180A5", "colours left alone keep Odoo's shade")
+        self.assertNotEqual(text["success"], "#7CD992", "a pale green is darkened to read on white")
+        light = self.attachment_text(self.LIGHT_URL)
+        self.assertIn("$o-navbar-badge-color: #111827 !default;", light)
 
     def test_density_and_width(self):
         self.set_theme(density="compact", sheet_width="wide")

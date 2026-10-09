@@ -101,6 +101,26 @@ class TestCompile(ThemeTestMixin, TransactionCase):
         self.compile("web.assets_backend_lazy")
         self.compile("web.assets_backend_lazy_dark")
 
+    def test_dark_tags_read_on_the_dark_sheet(self):
+        import re
+        from odoo.addons.twp_theme_settings.models.colors import contrast
+
+        def hex6(value):
+            value = value.lower()
+            return "#" + "".join(c * 2 for c in value[1:]) if len(value) == 4 else value
+
+        self.set_theme(dark_view="#262A33")
+        dark = self.compile("web.assets_web_dark")
+        for index in range(12):
+            rule = re.search(r"body \.o_tag\.o_tag_color_%d\b[^{]*\{([^}]*)\}" % index, dark)
+            self.assertTrue(rule, f"tag colour {index} has no dark rule")
+            bg = hex6(re.search(r"background-color:\s*(#[0-9a-fA-F]{3,6})", rule.group(1)).group(1))
+            fg = hex6(re.search(r"(?<!-)color:\s*(#[0-9a-fA-F]{3,6})", rule.group(1)).group(1))
+            self.assertGreaterEqual(contrast(fg, bg), 4.5, f"tag colour {index}")
+            self.assertLess(contrast(bg, "#262A33"), 3, f"tag colour {index} is a bright patch")
+        light = self.compile("web.assets_backend")
+        self.assertNotIn("body .o_tag.o_tag_color_1", light, "the dark rules leaked into light")
+
     def test_layout_settings_compile(self):
         self.set_theme(density="compact", sheet_width="full")
         css = self.compile("web.assets_backend")

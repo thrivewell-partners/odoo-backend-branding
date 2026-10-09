@@ -1,7 +1,7 @@
 {
     "name": "Backend Theme",
     "summary": "Colours, fonts and dark mode for the backend, set by the admin in Settings",
-    "version": "19.0.0.1.9",
+    "version": "19.0.0.1.10",
     "category": "Extra Tools",
     "license": "LGPL-3",
     "author": "ThriveWell Partners",
@@ -40,6 +40,9 @@
                 "web/static/src/scss/bootstrap_overridden.scss",
                 "twp_theme_settings/static/src/scss/dark/bootstrap.dark.scss",
             ),
+            # Component rules for a dark page. Plain CSS once compiled, so the
+            # lazy bundle does not need its own copy.
+            "twp_theme_settings/static/src/scss/dark/components.dark.scss",
         ],
         "web.assets_backend_lazy_dark": [
             (

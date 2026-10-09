@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        The branded login page. It replaces the layout's root, which with
+        website installed is already website's replacement (priority 20), and
+        keeps that root ($0) for when the branded page is off. Every page that
+        uses the login layout follows: login, password reset, sign up and
+        two-factor codes.
+    -->
+    <template id="login_layout" inherit_id="web.login_layout" priority="30" name="Backend Theme: login page">
+        <xpath expr="t[@t-call]" position="replace">
+            <t t-set="twp_login" t-value="request.env['twp.theme'].sudo()._login_values()"/>
+            <t t-if="twp_login" t-call="web.frontend_layout">
+                <t t-set="html_data" t-value="{'style': 'height: 100%;'}"/>
+                <t t-set="body_classname" t-value="'o_twp_login_body'"/>
+                <t t-set="no_header" t-value="True"/>
+                <t t-set="no_footer" t-value="True"/>
+                <t t-set="head">
+                    <link t-foreach="twp_login['fonts']" t-as="href" rel="stylesheet" t-att-href="href"/>
+                    <style id="twp_login_css" t-out="twp_login['css']"/>
+                </t>
+                <div t-attf-class="o_twp_login o_twp_login_{{ twp_login['layout'] }}">
+                    <div t-if="twp_login['layout'] == 'split'" class="o_twp_login_aside">
+                        <h1 t-if="twp_login['heading']" class="o_twp_login_heading" t-esc="twp_login['heading']"/>
+                        <p t-if="twp_login['tagline']" class="o_twp_login_tagline fs-5 mb-0" t-esc="twp_login['tagline']"/>
+                    </div>
+                    <div class="o_twp_login_main">
+                        <div class="o_twp_login_card o_database_list">
+                            <div class="text-center mb-4">
+                                <img class="o_twp_login_logo" t-att-src="twp_login['logo']" alt="Logo"/>
+                            </div>
+                            <div t-if="twp_login['heading'] or twp_login['tagline']" t-attf-class="text-center mb-4 {{ 'd-md-none' if twp_login['layout'] == 'split' else '' }}">
+                                <h1 t-if="twp_login['heading']" class="o_twp_login_heading" t-esc="twp_login['heading']"/>
+                                <div t-if="twp_login['tagline']" class="o_twp_login_tagline" t-esc="twp_login['tagline']"/>
+                            </div>
+                            <t t-out="0"/>
+                            <t t-call="twp_theme_settings.login_footer"/>
+                        </div>
+                    </div>
+                </div>
+            </t>
+            <t t-else="">$0</t>
+        </xpath>
+    </template>
+
+    <!-- Odoo's own login footer, kept separate so other modules can extend it. -->
+    <template id="login_footer" name="Backend Theme: login footer">
+        <div class="o_twp_login_footer text-center small mt-4 pt-3 border-top" t-if="not disable_footer">
+            <t t-if="not disable_database_manager">
+                <a class="border-end pe-2 me-1" href="/web/database/manager">Manage Databases</a>
+            </t>
+            <a href="https://www.odoo.com?utm_source=db&amp;utm_medium=auth" target="_blank">Powered by <span>Odoo</span></a>
+        </div>
+    </template>
+</odoo>

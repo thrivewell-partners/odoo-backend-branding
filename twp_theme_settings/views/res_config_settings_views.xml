@@ -164,6 +164,40 @@
                             <field name="twp_sheet_width" class="w-auto"/>
                         </setting>
                     </block>
+                    <block title="Login page" name="twp_login">
+                        <setting id="twp_login_enabled" help="Your logo, colours and fonts on the login page, instead of Odoo's or the website's. Applies to everyone; no company is chosen before login.">
+                            <field name="twp_login_enabled"/>
+                            <div class="mt-3" invisible="not twp_login_enabled">
+                                <div class="row">
+                                    <label for="twp_login_layout" class="col-4 o_light_label"/>
+                                    <field name="twp_login_layout" class="col-6 w-auto"/>
+                                </div>
+                                <div class="row mt-2">
+                                    <label for="twp_login_heading" class="col-4 o_light_label" string="Heading"/>
+                                    <field name="twp_login_heading" class="col-8" placeholder="Welcome back"/>
+                                </div>
+                                <div class="row mt-2">
+                                    <label for="twp_login_tagline" class="col-4 o_light_label" string="Tagline"/>
+                                    <field name="twp_login_tagline" class="col-8" placeholder="Optional line under the heading"/>
+                                </div>
+                                <div class="row mt-2">
+                                    <span class="col-4 py-1 o_light_label">Background</span>
+                                    <field name="twp_login_bg" widget="color" class="col-2 p-0" placeholder="Same as navbar"/>
+                                    <field name="twp_login_bg" class="col-4" placeholder="Same as navbar"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting id="twp_login_images" string="Login images" help="Logo blank uses the company logo. A background image covers the background colour; in split screen it fills the left half." invisible="not twp_login_enabled">
+                            <div class="row mt-2">
+                                <span class="col-4 o_light_label">Logo</span>
+                                <field name="twp_login_logo" widget="image" class="col-8" options="{'size': [0, 64]}"/>
+                            </div>
+                            <div class="row mt-2">
+                                <span class="col-4 o_light_label">Background image</span>
+                                <field name="twp_login_background" widget="image" class="col-8" options="{'size': [0, 96]}"/>
+                            </div>
+                        </setting>
+                    </block>
                     <block title="Staging copies" name="twp_staging">
                         <setting id="twp_staging_marker" help="On a neutralized copy, recolour the navbar and label it STAGING.">
                             <field name="twp_staging_marker"/>
@@ -173,7 +207,7 @@
                                 <field name="twp_staging_color" class="col-4" placeholder="#B7472A"/>
                             </div>
                         </setting>
-                        <setting id="twp_reset" string="Reset" help="Back to Odoo's colours, fonts and shape. Company colours are kept.">
+                        <setting id="twp_reset" string="Reset" help="Back to Odoo's colours, fonts, shape, layout and login page. Company colours and logos are kept.">
                             <button name="action_twp_reset_theme" type="object" string="Reset to Odoo defaults" class="btn-link" icon="oi-arrow-right" confirm="Reset the backend theme to Odoo's defaults?"/>
                         </setting>
                     </block>

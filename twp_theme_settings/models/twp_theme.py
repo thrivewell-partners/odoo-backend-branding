@@ -62,6 +62,9 @@ COMPACT = {
     "o-form-spacing-unit": "3px",
     "o-sheet-vpadding": "16px",
 }
+LOGIN_LAYOUTS = ("centred", "split")
+LOGIN_IMAGE = "twp-login-"
+
 # Odoo's form sheet stops at 1400px. Full width is capped by the screen.
 SHEET_WIDTHS = {"wide": "1800px", "full": "100vw"}
 
@@ -573,6 +576,114 @@ class TwpTheme(models.AbstractModel):
                 f"--btn-active-border-color:{hover};--btn-active-color:{text};}}"
             )
         return Markup("".join(rules))
+
+    # ------------------------------------------------------------------
+    # Login page, per database: no company is known before login
+    # ------------------------------------------------------------------
+
+    @api.model
+    def _login_image(self, key):
+        attachment_id = self._param(f"login_{key}_id")
+        if not attachment_id or not attachment_id.isdigit():
+            return self.env["ir.attachment"]
+        attachment = self.env["ir.attachment"].sudo().browse(int(attachment_id)).exists()
+        return attachment if attachment.name == LOGIN_IMAGE + key else self.env["ir.attachment"]
+
+    @api.model
+    def _set_login_image(self, key, datas):
+        """Keep the login logo or background as a public attachment."""
+        ICP = self.env["ir.config_parameter"].sudo()
+        current = self._login_image(key)
+        if not datas:
+            current.unlink()
+            ICP.set_param(PREFIX + f"login_{key}_id", False)
+            return
+        if current and current.datas == datas:
+            return
+        if current:
+            current.write({"datas": datas})
+        else:
+            current = self.env["ir.attachment"].sudo().create({
+                "name": LOGIN_IMAGE + key,
+                "type": "binary",
+                "datas": datas,
+                "public": True,
+            })
+            ICP.set_param(PREFIX + f"login_{key}_id", str(current.id))
+
+    @api.model
+    def _unlink_login_images(self):
+        self.env["ir.attachment"].sudo().search([("name", "=like", LOGIN_IMAGE + "%")]).unlink()
+
+    @api.model
+    def _font_stack(self, key):
+        name = self._param(key)
+        if name and FONT_NAME_RE.match(name):
+            return f'"{name}", {SYSTEM_FONTS}'
+        return SYSTEM_FONTS
+
+    @api.model
+    def _login_values(self):
+        """What the branded login page needs, or False to keep Odoo's.
+
+        The login page loads the frontend bundles, which never carry the
+        compiled theme, so its colours and fonts are written inline here.
+        Every colour is a validated hex value.
+        """
+        if self._param("login_enabled") != "True":
+            return False
+        palette = self._light_palette()
+        layout = self._param("login_layout")
+        layout = layout if layout in LOGIN_LAYOUTS else "centred"
+        bg = self._param("login_bg")
+        bg = bg.upper() if is_hex(bg) else palette["navbar"]
+        view, text, primary = palette["view"], palette["text"], palette["primary"]
+        logo, background = self._login_image("logo"), self._login_image("background")
+        image = f"/web/image/{background.id}?unique={background.checksum}" if background else ""
+        radius = self._param("radius")
+        radius = int(radius) if radius and radius.isdigit() and int(radius) <= 16 else 4
+        hover = mix(primary, "#000000", 0.1)
+        on_bg = "#FFFFFF" if image else ink(bg)
+        backdrop = (
+            f"linear-gradient(to top, rgba(0,0,0,.55), rgba(0,0,0,0) 60%), url('{image}')"
+            if image else "none"
+        )
+        body_font = self._font_stack("font_body")
+        head_font = self._font_stack("font_head") if self._param("font_head") else body_font
+        css = f"""
+body.o_twp_login_body {{ background: {bg}; }}
+.o_twp_login {{ min-height: 100vh; display: flex; color: {text}; font-family: {body_font}; }}
+.o_twp_login .o_twp_login_main {{ flex: 1 1 50%; display: flex; align-items: center; justify-content: center; padding: 3rem 1rem; }}
+.o_twp_login .o_twp_login_card {{ width: 100%; max-width: 380px; background: {view}; color: {text}; border-radius: {radius + 4}px; padding: 2rem; }}
+.o_twp_login_centred {{ background: {bg} {f"url('{image}') center / cover no-repeat" if image else ""}; }}
+.o_twp_login_centred .o_twp_login_card {{ box-shadow: 0 12px 32px rgba(0,0,0,.2); }}
+.o_twp_login_split .o_twp_login_aside {{ flex: 1 1 50%; display: flex; flex-direction: column; justify-content: flex-end; padding: 3rem; background: {backdrop} center / cover no-repeat, {bg}; color: {on_bg}; }}
+.o_twp_login_split .o_twp_login_aside .o_twp_login_tagline {{ color: {on_bg}; opacity: .85; }}
+.o_twp_login_split .o_twp_login_main {{ background: {view}; }}
+@media (max-width: 767.98px) {{ .o_twp_login_split .o_twp_login_aside {{ display: none; }} }}
+.o_twp_login .o_twp_login_heading {{ font-family: {head_font}; font-weight: 700; margin-bottom: .25rem; }}
+.o_twp_login .o_twp_login_card .o_twp_login_heading {{ font-size: 1.5rem; }}
+.o_twp_login .o_twp_login_aside .o_twp_login_heading {{ font-size: 2.5rem; }}
+.o_twp_login .o_twp_login_tagline {{ opacity: .75; }}
+.o_twp_login .o_twp_login_logo {{ max-height: 96px; max-width: 100%; width: auto; }}
+.o_twp_login .btn, .o_twp_login .form-control {{ border-radius: {radius}px; }}
+.o_twp_login .btn-primary {{ --btn-bg: {primary}; --btn-border-color: {primary}; --btn-color: {ink(primary)}; --btn-hover-bg: {hover}; --btn-hover-border-color: {hover}; --btn-hover-color: {ink(hover)}; --btn-active-bg: {hover}; --btn-active-border-color: {hover}; --btn-active-color: {ink(hover)}; }}
+.o_twp_login a:not(.btn) {{ color: {readable(primary, view)}; }}
+.o_twp_login .form-control:focus {{ border-color: {primary}; box-shadow: 0 0 0 .2rem {primary}40; }}
+"""
+        fonts = []
+        for key in ("font_body", "font_head"):
+            css_id = self._param(key + "_css_id")
+            if css_id and css_id.isdigit() and f"/web/content/{css_id}" not in fonts:
+                fonts.append(f"/web/content/{css_id}")
+        return {
+            "layout": layout,
+            "heading": self._param("login_heading") or "",
+            "tagline": self._param("login_tagline") or "",
+            "logo": f"/web/image/{logo.id}?unique={logo.checksum}" if logo else "/web/binary/company_logo",
+            "css": Markup(css),
+            "fonts": fonts,
+        }
 
     # ------------------------------------------------------------------
     # Guardrail used by the Settings form

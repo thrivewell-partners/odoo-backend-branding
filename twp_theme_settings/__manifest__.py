@@ -1,7 +1,7 @@
 {
     "name": "Backend Theme",
     "summary": "Colours, fonts and dark mode for the backend, set by the admin in Settings",
-    "version": "19.0.0.1.7",
+    "version": "19.0.0.1.8",
     "category": "Extra Tools",
     "license": "LGPL-3",
     "author": "ThriveWell Partners",
@@ -12,6 +12,7 @@
         "views/res_config_settings_views.xml",
         "views/res_company_views.xml",
         "views/webclient_templates.xml",
+        "views/login_templates.xml",
     ],
     "assets": {
         "web.assets_backend": [

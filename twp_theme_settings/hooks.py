@@ -14,8 +14,9 @@ def _post_init_hook(env):
 
 def _uninstall_hook(env):
     # The generated SCSS attachments and the ir.asset records are module data
-    # and go with the module. Downloaded font files are created at runtime, so
-    # they are removed here, along with the module's settings.
+    # and go with the module. Downloaded font files and login images are
+    # created at runtime, so they are removed here, along with the settings.
     env["twp.theme"]._unlink_font_attachments()
+    env["twp.theme"]._unlink_login_images()
     env["ir.config_parameter"].sudo().search([("key", "=like", PREFIX + "%")]).unlink()
     env["ir.attachment"].regenerate_assets_bundles()

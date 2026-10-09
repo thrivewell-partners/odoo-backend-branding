@@ -6,6 +6,7 @@ from .colors import is_hex
 from .twp_theme import PALETTE, PREFIX
 
 COLOR_FIELDS = [f"twp_{key}" for key in PALETTE] + [f"twp_dark_{key}" for key in PALETTE]
+CHECKED_COLORS = COLOR_FIELDS + ["twp_staging_color", "twp_login_bg"]
 
 
 class ResConfigSettings(models.TransientModel):
@@ -73,6 +74,24 @@ class ResConfigSettings(models.TransientModel):
         default="normal",
     )
 
+    # Login page. The images are kept as public attachments in set_values.
+    twp_login_enabled = fields.Boolean(
+        "Branded login page", config_parameter=PREFIX + "login_enabled"
+    )
+    twp_login_layout = fields.Selection(
+        [("centred", "Centred card"), ("split", "Split screen")],
+        string="Login layout",
+        config_parameter=PREFIX + "login_layout",
+        default="centred",
+    )
+    twp_login_bg = fields.Char("Login background colour", config_parameter=PREFIX + "login_bg")
+    twp_login_heading = fields.Char("Login heading", config_parameter=PREFIX + "login_heading")
+    twp_login_tagline = fields.Char("Login tagline", config_parameter=PREFIX + "login_tagline")
+    twp_login_logo = fields.Image("Login logo", attachment=False, max_width=1024, max_height=1024)
+    twp_login_background = fields.Image(
+        "Login background image", attachment=False, max_width=2560, max_height=2560
+    )
+
     twp_staging_marker = fields.Boolean(
         "Mark staging copies", config_parameter=PREFIX + "staging_marker"
     )
@@ -105,10 +124,12 @@ class ResConfigSettings(models.TransientModel):
         Theme = self.env["twp.theme"]
         res["twp_font_body"] = Theme._param("font_body") or False
         res["twp_font_head"] = Theme._param("font_head") or False
+        res["twp_login_logo"] = Theme._login_image("logo").datas or False
+        res["twp_login_background"] = Theme._login_image("background").datas or False
         return res
 
     def set_values(self):
-        for name in COLOR_FIELDS + ["twp_staging_color"]:
+        for name in CHECKED_COLORS:
             value = (self[name] or "").strip()
             if value and not is_hex(value):
                 raise UserError(
@@ -118,6 +139,8 @@ class ResConfigSettings(models.TransientModel):
         Theme = self.env["twp.theme"]
         Theme._set_font("font_body", self.twp_font_body)
         Theme._set_font("font_head", self.twp_font_head)
+        Theme._set_login_image("logo", self.twp_login_logo)
+        Theme._set_login_image("background", self.twp_login_background)
         Theme._regenerate()
 
     def action_twp_reset_theme(self):
@@ -127,5 +150,6 @@ class ResConfigSettings(models.TransientModel):
         params = ICP.search([("key", "=like", PREFIX + "%"), ("key", "not in", list(keep))])
         params.unlink()
         self.env["twp.theme"]._unlink_font_attachments()
+        self.env["twp.theme"]._unlink_login_images()
         self.env["twp.theme"]._regenerate()
         return {"type": "ir.actions.client", "tag": "reload"}

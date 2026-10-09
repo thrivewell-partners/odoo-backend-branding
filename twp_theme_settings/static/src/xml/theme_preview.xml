@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="twp_theme_settings.ThemePreview">
+        <div class="o_twp_preview" t-if="!search.value" t-att-style="style">
+            <div class="o_twp_preview_head d-flex flex-wrap align-items-center gap-2">
+                <span class="fw-bold me-auto">Preview</span>
+                <div t-if="darkEnabled and !state.collapsed" class="btn-group btn-group-sm" role="group" aria-label="Light or dark">
+                    <button type="button" class="btn btn-secondary" t-att-class="{ active: scheme === 'light' }" t-att-aria-pressed="scheme === 'light' ? 'true' : 'false'" t-on-click="() => this.setScheme('light')">Light</button>
+                    <button type="button" class="btn btn-secondary" t-att-class="{ active: scheme === 'dark' }" t-att-aria-pressed="scheme === 'dark' ? 'true' : 'false'" t-on-click="() => this.setScheme('dark')">Dark</button>
+                </div>
+                <button type="button" class="btn btn-sm btn-link" t-att-aria-expanded="state.collapsed ? 'false' : 'true'" t-on-click="toggle">
+                    <t t-if="state.collapsed">Show preview</t>
+                    <t t-else="">Hide preview</t>
+                </button>
+            </div>
+            <t t-if="!state.collapsed">
+                <div class="o_twp_preview_panes">
+                    <div class="o_twp_pv_window" aria-hidden="true">
+                        <div class="o_twp_pv_navbar"><b>Sales</b><span>Orders</span><span>Products</span></div>
+                        <div class="o_twp_pv_cp">
+                            <span class="o_twp_pv_btn o_twp_pv_btn_primary">New</span>
+                            <span class="o_twp_pv_crumb">Quotations</span>
+                        </div>
+                        <table class="o_twp_pv_list">
+                            <thead><tr><th>Number</th><th>Customer</th><th class="text-end">Total</th><th>Status</th></tr></thead>
+                            <tbody>
+                                <tr><td>S00042</td><td>Northwind</td><td class="text-end">1,250.00</td><td><span class="o_twp_pv_badge o_twp_pv_success">Paid</span></td></tr>
+                                <tr><td>S00043</td><td>Bluebell Farm</td><td class="text-end">480.00</td><td><span class="o_twp_pv_badge o_twp_pv_info">Sent</span></td></tr>
+                                <tr><td>S00044</td><td>Harbor Tools</td><td class="text-end">96.50</td><td><span class="o_twp_pv_badge o_twp_pv_warning">To check</span></td></tr>
+                                <tr><td>S00045</td><td>Oakline</td><td class="text-end">2,310.00</td><td><span class="o_twp_pv_badge o_twp_pv_danger">Overdue</span></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="o_twp_pv_window" aria-hidden="true">
+                        <div class="o_twp_pv_navbar"><b>Sales</b><span>Orders</span><span>Products</span></div>
+                        <div class="o_twp_pv_cp">
+                            <span class="o_twp_pv_crumb"><span class="o_twp_pv_link">Quotations</span> / S00042</span>
+                        </div>
+                        <div class="o_twp_pv_form">
+                            <div class="o_twp_pv_buttons">
+                                <span class="o_twp_pv_btn o_twp_pv_btn_primary">Confirm</span>
+                                <span class="o_twp_pv_btn">Send</span>
+                                <span class="o_twp_pv_status ms-auto"><span>Quotation</span><span class="o_twp_pv_current">Sent</span><span>Order</span></span>
+                            </div>
+                            <div class="o_twp_pv_sheet">
+                                <div class="o_twp_pv_title">S00042</div>
+                                <div class="o_twp_pv_field"><span>Customer</span><span class="o_twp_pv_link">Northwind Traders</span></div>
+                                <div class="o_twp_pv_field"><span>Expires</span><span>10/31/2026</span></div>
+                                <div class="o_twp_pv_field"><span>Terms</span><span class="o_twp_pv_input">30 days</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div t-if="data.twp_login_enabled" class="o_twp_pv_login" t-att-class="data.twp_login_layout === 'split' ? 'o_twp_pv_login_split' : 'o_twp_pv_login_centred'" t-att-style="data.twp_login_layout === 'split' ? '' : loginBackgroundStyle" aria-hidden="true">
+                        <div t-if="data.twp_login_layout === 'split'" class="o_twp_pv_login_aside" t-att-style="loginBackgroundStyle">
+                            <div class="o_twp_pv_title" t-esc="data.twp_login_heading"/>
+                            <div class="small" t-esc="data.twp_login_tagline"/>
+                        </div>
+                        <div class="o_twp_pv_login_main">
+                            <div class="o_twp_pv_login_card">
+                                <img t-att-src="loginLogo" alt=""/>
+                                <t t-if="data.twp_login_layout !== 'split'">
+                                    <div class="o_twp_pv_title" t-if="data.twp_login_heading" t-esc="data.twp_login_heading"/>
+                                    <div class="small o_twp_pv_muted" t-if="data.twp_login_tagline" t-esc="data.twp_login_tagline"/>
+                                </t>
+                                <span class="o_twp_pv_input">Email</span>
+                                <span class="o_twp_pv_input">Password</span>
+                                <span class="o_twp_pv_btn o_twp_pv_btn_primary text-center">Log in</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div t-else="" class="o_twp_pv_login o_twp_pv_login_off">
+                        <span>The login page is Odoo's own. Turn on <b>Branded login page</b> below to see it here.</span>
+                    </div>
+                </div>
+                <div class="o_twp_preview_foot small">
+                    <div t-if="warnings.length" class="text-warning" role="status">
+                        <i class="fa fa-exclamation-triangle me-1" role="img" aria-label="Warning"/>
+                        <span>Hard to read, below the 4.5:1 contrast guideline:</span>
+                        <ul class="mb-1">
+                            <li t-foreach="warnings" t-as="warning" t-key="warning.key" t-esc="warning.text"/>
+                        </ul>
+                    </div>
+                    <div t-else="" class="text-success">
+                        <i class="fa fa-check me-1" role="img" aria-label="Passes"/>Every text and background pair passes the 4.5:1 contrast guideline.
+                    </div>
+                    <div class="text-muted">
+                        Shows your changes before you save them. The backend changes when you save. Company colours and logos are not shown here.
+                        <t t-if="pendingFonts.length"> <t t-esc="pendingFonts.join(', ')"/> will show here after you save.</t>
+                        <t t-if="scheme === 'dark'"> The login page always uses the light colours.</t>
+                    </div>
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>

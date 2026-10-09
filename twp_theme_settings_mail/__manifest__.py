@@ -1,7 +1,7 @@
 {
     "name": "Backend Theme: Discuss",
     "summary": "Chatter position for the Backend Theme. Installs itself when Discuss is present",
-    "version": "19.0.0.1.0",
+    "version": "19.0.0.1.1",
     "category": "Hidden",
     "license": "LGPL-3",
     "author": "ThriveWell Partners",

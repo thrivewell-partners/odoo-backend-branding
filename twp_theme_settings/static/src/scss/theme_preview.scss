@@ -1,0 +1,293 @@
+// The preview card at the top of Settings > Backend Theme. Its colours come
+// from CSS variables the widget sets from the form, not from the compiled
+// theme, so it shows unsaved edits.
+.o_twp_preview {
+    // Stays in view while the admin scrolls the Backend Theme settings.
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    margin: 0 0 1rem;
+    padding: .5rem .75rem .75rem;
+    background: $o-view-background-color;
+    border-bottom: 1px solid $border-color;
+
+    @include media-breakpoint-down(lg) {
+        position: static;
+    }
+
+    .o_twp_preview_panes {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: .75rem;
+        margin-top: .5rem;
+
+        @include media-breakpoint-down(lg) {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+
+    .o_twp_preview_foot {
+        margin-top: .5rem;
+
+        ul {
+            padding-inline-start: 1.25rem;
+        }
+    }
+}
+
+.o_twp_pv_window,
+.o_twp_pv_login {
+    overflow: hidden;
+    min-height: 190px;
+    border: 1px solid $border-color;
+    border-radius: 6px;
+    font-size: calc(var(--twp-pv-size) * .78);
+    line-height: 1.4;
+}
+
+.o_twp_pv_window {
+    background: var(--twp-pv-bg);
+    color: var(--twp-pv-text);
+    font-family: var(--twp-pv-font);
+}
+
+.o_twp_pv_navbar {
+    display: flex;
+    gap: 1em;
+    align-items: center;
+    padding: .45em .9em;
+    background: var(--twp-pv-navbar);
+    color: var(--twp-pv-navbar-ink);
+
+    span {
+        opacity: .9;
+    }
+}
+
+.o_twp_pv_cp {
+    display: flex;
+    gap: .6em;
+    align-items: center;
+    padding: .45em .9em;
+    background: var(--twp-pv-view);
+    border-bottom: 1px solid var(--twp-pv-line);
+}
+
+.o_twp_pv_crumb,
+.o_twp_pv_title {
+    font-family: var(--twp-pv-head);
+    font-weight: 600;
+}
+
+.o_twp_pv_btn {
+    display: inline-block;
+    padding: .15em .7em;
+    border: 1px solid var(--twp-pv-line);
+    border-radius: var(--twp-pv-radius);
+    background: var(--twp-pv-view);
+    color: var(--twp-pv-text);
+    white-space: nowrap;
+}
+
+.o_twp_pv_btn_primary {
+    border-color: var(--twp-pv-primary);
+    background: var(--twp-pv-primary);
+    color: var(--twp-pv-primary-ink);
+}
+
+.o_twp_pv_link {
+    color: var(--twp-pv-link);
+}
+
+.o_twp_pv_muted {
+    color: var(--twp-pv-muted);
+}
+
+.o_twp_pv_list {
+    width: 100%;
+    background: var(--twp-pv-view);
+    border-collapse: collapse;
+
+    th,
+    td {
+        padding: var(--twp-pv-pad) .9em;
+        border-bottom: 1px solid var(--twp-pv-line);
+        white-space: nowrap;
+    }
+
+    th {
+        font-weight: 600;
+    }
+}
+
+.o_twp_pv_badge {
+    padding: 0 .6em;
+    border-radius: 999px;
+    font-size: .9em;
+    font-weight: 600;
+}
+
+@each $key in success, info, warning, danger {
+    .o_twp_pv_#{$key} {
+        background: var(--twp-pv-#{$key});
+        color: var(--twp-pv-#{$key}-ink);
+    }
+}
+
+.o_twp_pv_form {
+    padding: .6em .9em;
+}
+
+.o_twp_pv_buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4em;
+    align-items: center;
+    margin-bottom: .6em;
+}
+
+.o_twp_pv_status {
+    display: inline-flex;
+
+    > span {
+        padding: .15em .6em;
+        border: 1px solid var(--twp-pv-line);
+        background: var(--twp-pv-view);
+        color: var(--twp-pv-muted);
+
+        + span {
+            border-inline-start: 0;
+        }
+
+        &:first-child {
+            border-start-start-radius: var(--twp-pv-radius);
+            border-end-start-radius: var(--twp-pv-radius);
+        }
+
+        &:last-child {
+            border-start-end-radius: var(--twp-pv-radius);
+            border-end-end-radius: var(--twp-pv-radius);
+        }
+    }
+
+    .o_twp_pv_current {
+        background: var(--twp-pv-pressed);
+        color: var(--twp-pv-pressed-ink);
+        font-weight: 600;
+    }
+}
+
+.o_twp_pv_sheet {
+    display: grid;
+    gap: calc(var(--twp-pv-pad) + .1em);
+    padding: .8em;
+    background: var(--twp-pv-view);
+    border: 1px solid var(--twp-pv-line);
+    border-radius: var(--twp-pv-radius);
+
+    .o_twp_pv_title {
+        font-size: 1.35em;
+    }
+}
+
+.o_twp_pv_field {
+    display: grid;
+    grid-template-columns: 6em minmax(0, 1fr);
+    gap: .6em;
+
+    > span:first-child {
+        font-weight: 600;
+    }
+}
+
+.o_twp_pv_input {
+    display: block;
+    padding: .1em .4em;
+    border: 1px solid var(--twp-pv-line);
+    border-radius: var(--twp-pv-radius);
+    background: var(--twp-pv-view);
+}
+
+// The login page always uses the light palette.
+.o_twp_pv_login {
+    display: flex;
+    background: var(--twp-pv-login-bg) center / cover no-repeat;
+    color: var(--twp-pv-login-text);
+    font-family: var(--twp-pv-font);
+
+    .o_twp_pv_input {
+        border-color: var(--twp-pv-login-line);
+        background: var(--twp-pv-login-view);
+        color: var(--twp-pv-login-muted);
+    }
+
+    .o_twp_pv_btn_primary {
+        border-color: var(--twp-pv-login-primary);
+        background: var(--twp-pv-login-primary);
+        color: var(--twp-pv-login-primary-ink);
+    }
+}
+
+.o_twp_pv_login_main {
+    display: flex;
+    flex: 1 1 56%;
+    align-items: center;
+    justify-content: center;
+    padding: .8em;
+}
+
+.o_twp_pv_login_card {
+    display: grid;
+    gap: .4em;
+    width: 100%;
+    max-width: 15em;
+    padding: .9em;
+    border-radius: calc(var(--twp-pv-radius) + 4px);
+    background: var(--twp-pv-login-view);
+    color: var(--twp-pv-login-text);
+    text-align: center;
+
+    img {
+        max-width: 100%;
+        max-height: 2.6em;
+        margin: 0 auto;
+        object-fit: contain;
+    }
+
+    .o_twp_pv_input {
+        text-align: start;
+    }
+}
+
+.o_twp_pv_login_centred .o_twp_pv_login_card {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, .2);
+}
+
+.o_twp_pv_login_split {
+    .o_twp_pv_login_aside {
+        display: flex;
+        flex: 1 1 44%;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: .9em;
+        background: var(--twp-pv-login-bg) center / cover no-repeat;
+        color: var(--twp-pv-login-ink);
+
+        .o_twp_pv_title {
+            font-size: 1.3em;
+        }
+    }
+
+    .o_twp_pv_login_main {
+        background: var(--twp-pv-login-view);
+    }
+}
+
+.o_twp_pv_login_off {
+    align-items: center;
+    justify-content: center;
+    padding: 1em;
+    background: $o-webclient-background-color;
+    color: $text-muted;
+    text-align: center;
+}

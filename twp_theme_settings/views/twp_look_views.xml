@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="twp_theme_look_import_view_form" model="ir.ui.view">
+        <field name="name">twp.theme.look.import.form</field>
+        <field name="model">twp.theme.look.import</field>
+        <field name="arch" type="xml">
+            <form string="Load a look">
+                <p class="text-muted">
+                    A look file is downloaded from Settings &gt; Backend Theme on another database.
+                    Loading it replaces this database's colours, fonts, shape, layout and login page.
+                    Company colours and logos, and the staging marker, are kept.
+                </p>
+                <group>
+                    <field name="look_filename" invisible="1"/>
+                    <field name="look_file" filename="look_filename"/>
+                </group>
+                <field name="look_error" invisible="1"/>
+                <div invisible="not look_error" class="alert alert-danger mb-0" role="alert">
+                    <field name="summary" nolabel="1"/>
+                </div>
+                <div invisible="not summary or look_error" class="alert alert-info mb-0" role="status">
+                    <field name="summary" nolabel="1"/>
+                </div>
+                <footer>
+                    <button name="action_load" type="object" string="Load this look" class="btn-primary" invisible="not look_file or look_error"/>
+                    <button special="cancel" string="Cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

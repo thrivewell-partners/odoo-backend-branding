@@ -1,5 +1,6 @@
 import base64
 import logging
+import math
 import re
 from urllib.parse import quote_plus, urlparse
 
@@ -702,5 +703,7 @@ body.o_twp_login_body {{ background: {bg}; }}
             for name, fg, bg in pairs:
                 ratio = contrast(fg, bg)
                 if ratio < 4.5:
-                    warnings.append(f"{label}: {name} is {ratio:.1f}:1, below 4.5:1")
+                    # Rounded down, so 4.48 never reads as a passing 4.5.
+                    shown = math.floor(ratio * 10) / 10
+                    warnings.append(f"{label}: {name} is {shown:.1f}:1, below 4.5:1")
         return warnings

@@ -7,6 +7,7 @@
         <field name="arch" type="xml">
             <xpath expr="//form" position="inside">
                 <app data-string="Backend Theme" string="Backend Theme" name="twp_theme_settings" logo="/twp_theme_settings/static/description/icon.png" groups="base.group_system">
+                    <widget name="twp_theme_preview"/>
                     <block title="Colours and dark mode" name="twp_colors">
                         <div class="col-12 px-3" invisible="not twp_viewing_dark and not (twp_is_staging_copy and twp_staging_marker)">
                             <div class="alert alert-info mb-0" role="status">
@@ -28,10 +29,6 @@
                                 <label for="twp_dark_default" class="o_light_label me-2"/>
                                 <field name="twp_dark_default" class="w-auto"/>
                             </div>
-                        </setting>
-                        <setting id="twp_contrast" string="Contrast check" help="Text and background pairs below 4.5:1, for the saved theme.">
-                            <field name="twp_contrast_warnings" readonly="1" class="text-warning" invisible="not twp_contrast_warnings"/>
-                            <div class="text-success" invisible="twp_contrast_warnings">Every pair passes.</div>
                         </setting>
                         <setting id="twp_color_primary" string="Primary" help="Buttons, links, active items. Blank follows the navbar colour.">
                             <div class="row mt-2">
@@ -206,6 +203,14 @@
                                 <field name="twp_staging_color" widget="color" class="col-2 p-0"/>
                                 <field name="twp_staging_color" class="col-4" placeholder="#B7472A"/>
                             </div>
+                        </setting>
+                    </block>
+                    <block title="Copy and reset" name="twp_copy">
+                        <setting id="twp_export_look" string="Download the look" help="The saved colours, fonts, shape, layout and login page as a file, to load into another database. Save your changes first.">
+                            <button name="action_twp_export_look" type="object" string="Download" class="btn-link" icon="fa-download"/>
+                        </setting>
+                        <setting id="twp_import_look" string="Load a look" help="Replace this look with one downloaded from another database. Company colours and logos are kept.">
+                            <button name="action_twp_import_look" type="object" string="Load from a file" class="btn-link" icon="fa-upload"/>
                         </setting>
                         <setting id="twp_reset" string="Reset" help="Back to Odoo's colours, fonts, shape, layout and login page. Company colours and logos are kept.">
                             <button name="action_twp_reset_theme" type="object" string="Reset to Odoo defaults" class="btn-link" icon="oi-arrow-right" confirm="Reset the backend theme to Odoo's defaults?"/>

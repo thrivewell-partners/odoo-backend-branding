@@ -7,6 +7,15 @@ from .twp_theme import PALETTE, PREFIX
 
 COLOR_FIELDS = [f"twp_{key}" for key in PALETTE] + [f"twp_dark_{key}" for key in PALETTE]
 CHECKED_COLORS = COLOR_FIELDS + ["twp_staging_color", "twp_login_bg"]
+# The settings a look file carries between databases. Staging marking belongs
+# to one database, and company colours and logos to its companies.
+LOOK_FIELDS = COLOR_FIELDS + [
+    "twp_dark_enabled", "twp_dark_default",
+    "twp_font_body", "twp_font_head", "twp_font_size", "twp_radius",
+    "twp_density", "twp_sheet_width",
+    "twp_login_enabled", "twp_login_layout", "twp_login_bg", "twp_login_heading",
+    "twp_login_tagline", "twp_login_logo", "twp_login_background",
+]
 
 
 class ResConfigSettings(models.TransientModel):
@@ -97,17 +106,9 @@ class ResConfigSettings(models.TransientModel):
     )
     twp_staging_color = fields.Char("Staging colour", config_parameter=PREFIX + "staging_color")
 
-    twp_contrast_warnings = fields.Text(compute="_compute_twp_contrast_warnings")
     # Explain why a saved colour may not be what the admin sees right now.
     twp_viewing_dark = fields.Boolean(compute="_compute_twp_viewing")
     twp_is_staging_copy = fields.Boolean(compute="_compute_twp_viewing")
-
-    @api.depends(*COLOR_FIELDS)
-    def _compute_twp_contrast_warnings(self):
-        # Reflects the saved theme; the preview card checks unsaved edits.
-        warnings = self.env["twp.theme"]._contrast_warnings()
-        for settings in self:
-            settings.twp_contrast_warnings = "\n".join(warnings)
 
     def _compute_twp_viewing(self):
         dark = bool(request) and self.env["ir.http"].color_scheme() == "dark"
@@ -142,6 +143,23 @@ class ResConfigSettings(models.TransientModel):
         Theme._set_login_image("logo", self.twp_login_logo)
         Theme._set_login_image("background", self.twp_login_background)
         Theme._regenerate()
+
+    @api.model
+    def _twp_look_fields(self):
+        """Extended by the bridge modules that add settings to the look."""
+        return list(LOOK_FIELDS)
+
+    def action_twp_export_look(self):
+        return {"type": "ir.actions.act_url", "url": "/twp_theme_settings/look", "target": "download"}
+
+    def action_twp_import_look(self):
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Load a look"),
+            "res_model": "twp.theme.look.import",
+            "view_mode": "form",
+            "target": "new",
+        }
 
     def action_twp_reset_theme(self):
         """Back to Odoo's look. Company colours are left alone."""

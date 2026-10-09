@@ -1,18 +1,20 @@
 {
     "name": "Backend Theme",
     "summary": "Colours, fonts and dark mode for the backend, set by the admin in Settings",
-    "version": "19.0.0.1.8",
+    "version": "19.0.0.1.9",
     "category": "Extra Tools",
     "license": "LGPL-3",
     "author": "ThriveWell Partners",
     "depends": ["web", "base_setup"],
     "external_dependencies": {"python": ["requests"]},
     "data": [
+        "security/ir.model.access.csv",
         "data/twp_theme_assets.xml",
         "views/res_config_settings_views.xml",
         "views/res_company_views.xml",
         "views/webclient_templates.xml",
         "views/login_templates.xml",
+        "views/twp_look_views.xml",
     ],
     "assets": {
         "web.assets_backend": [
@@ -20,6 +22,10 @@
             "twp_theme_settings/static/src/js/navbar_logo.js",
             "twp_theme_settings/static/src/xml/navbar_logo.xml",
             "twp_theme_settings/static/src/scss/navbar_logo.scss",
+            "twp_theme_settings/static/src/js/colors.js",
+            "twp_theme_settings/static/src/js/theme_preview.js",
+            "twp_theme_settings/static/src/xml/theme_preview.xml",
+            "twp_theme_settings/static/src/scss/theme_preview.scss",
         ],
         # Structural dark-mode styling. The admin's dark palette is generated
         # into an attachment and prepended by data/twp_theme_assets.xml.

@@ -1,4 +1,4 @@
-from odoo import fields, models
+from odoo import api, fields, models
 
 from odoo.addons.twp_theme_settings.models.twp_theme import PREFIX
 
@@ -12,3 +12,7 @@ class ResConfigSettings(models.TransientModel):
         config_parameter=PREFIX + "chatter_position",
         default="auto",
     )
+
+    @api.model
+    def _twp_look_fields(self):
+        return super()._twp_look_fields() + ["twp_chatter_position"]

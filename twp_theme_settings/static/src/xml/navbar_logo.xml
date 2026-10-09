@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-inherit="web.NavBar" t-inherit-mode="extension">
+        <xpath expr="//t[@t-call='web.NavBar.AppsMenu']" position="after">
+            <img t-if="!this.ui.isSmall and twpNavbarLogo" class="o_twp_navbar_logo" t-att-src="twpNavbarLogo" alt=""/>
+        </xpath>
+    </t>
+</templates>

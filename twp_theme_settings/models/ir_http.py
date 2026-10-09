@@ -57,6 +57,20 @@ class IrHttp(models.AbstractModel):
             )
         return context
 
+    def session_info(self):
+        info = super().session_info()
+        companies = info.get("user_companies", {}).get("allowed_companies", {})
+        if companies:
+            # The navbar asks for the active company's logo by its write date,
+            # so a new logo is fetched rather than served from the cache.
+            with_logo = self.env["res.company"].sudo().search_read(
+                [("id", "in", list(companies)), ("twp_navbar_logo", "!=", False)], ["write_date"]
+            )
+            stamps = {row["id"]: str(int(row["write_date"].timestamp())) for row in with_logo}
+            for company_id, company in companies.items():
+                company["twp_navbar_logo"] = stamps.get(company_id, False)
+        return info
+
     @classmethod
     def _post_dispatch(cls, response):
         # Ask Chromium browsers to send the device's light or dark preference,

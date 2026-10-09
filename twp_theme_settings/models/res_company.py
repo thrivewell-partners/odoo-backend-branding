@@ -23,6 +23,14 @@ class ResCompany(models.Model):
         "Accent colour, dark", help="Blank works it out from the light accent colour."
     )
 
+    twp_navbar_logo = fields.Image(
+        "Navbar logo",
+        max_width=600,
+        max_height=150,
+        help="Shown in the navbar beside the apps menu while this company is selected. "
+        "A wide logo with a transparent background works best.",
+    )
+
     @api.constrains(*COMPANY_COLOR_FIELDS)
     def _check_twp_colors(self):
         for company in self:

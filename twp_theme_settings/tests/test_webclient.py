@@ -98,3 +98,18 @@ class TestWebclient(ThemeTestMixin, HttpCase):
         ICP.set_param("twp_theme_settings.staging_marker", False)
         html = self.page()
         self.assertNotIn("STAGING", html)
+
+    def test_navbar_logo_per_company(self):
+        png = (
+            "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+        )
+        self.company_b.twp_navbar_logo = png
+        info = self.env["ir.http"].with_user(self.user).session_info()
+        companies = info["user_companies"]["allowed_companies"]
+        self.assertTrue(companies[self.company_b.id]["twp_navbar_logo"])
+        self.assertFalse(companies[self.company_a.id]["twp_navbar_logo"])
+        self.authenticate("twp_theme_user", PASSWORD)
+        url = f"/web/image/res.company/{self.company_b.id}/twp_navbar_logo"
+        response = self.url_open(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.headers["Content-Type"].startswith("image/"))

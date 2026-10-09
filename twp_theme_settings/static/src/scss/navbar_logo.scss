@@ -1,0 +1,7 @@
+.o_main_navbar .o_twp_navbar_logo {
+    align-self: center;
+    max-height: calc(var(--o-navbar-height, 46px) - 18px);
+    max-width: 160px;
+    margin-inline: .25rem .5rem;
+    object-fit: contain;
+}

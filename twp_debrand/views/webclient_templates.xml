@@ -31,10 +31,10 @@
 
     <!-- The page the installed app shows offline. Its icon comes from the controller. -->
     <template id="webclient_offline" inherit_id="web.webclient_offline" name="Branding: offline page">
-        <xpath expr="//div[hasclass('card')]/img[@alt='Odoo logo']" position="attributes">
+        <xpath expr="//div[hasclass('card')]/img" position="attributes">
             <attribute name="t-if">not twp_app_name</attribute>
         </xpath>
-        <xpath expr="//div[hasclass('card')]/img[@alt='Odoo logo']" position="before">
+        <xpath expr="//div[hasclass('card')]/img" position="before">
             <t t-set="twp_app_name" t-value="env['ir.config_parameter'].sudo().get_param('web.web_app_name')"/>
             <img t-if="twp_app_name" t-attf-src="data:image/png;base64,{{odoo_icon}}" t-att-alt="twp_app_name"/>
         </xpath>

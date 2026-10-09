@@ -69,7 +69,8 @@ Spreadsheet dashboards stay light: Odoo forces o-spreadsheet to a light scheme i
 * **Website keeps its own** tab title and favicon on its pages, the login page included.
 
 Not covered yet: OdooBot's onboarding chat text, the digest email's app banner and tips, the
-internal-user invitation email's wording, and "Odoo" in Live Chat, Peppol and Calendar texts.
+internal-user invitation email's wording, "Odoo" in Live Chat, Peppol and Calendar texts, and the
+notification pop-ups on the public Discuss page, which loads none of the backend's scripts.
 
 ## Moving a look between databases
 

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        "Connect with your software!" in the sidebar of an online purchase
+        order, and the window it opens, as in the Sales bridge.
+    -->
+    <template id="portal_my_purchase_order" inherit_id="purchase.portal_my_purchase_order" name="Branding: Connect with your software">
+        <xpath expr="//button[@id='portal_connect_software_modal_btn']/.." position="attributes">
+            <attribute name="t-if" add="not env['twp.debrand'].sudo()._on('connect_software')" separator=" and "/>
+        </xpath>
+        <xpath expr="//div[@id='portal_connect_software_modal']" position="attributes">
+            <attribute name="t-if">not env['twp.debrand'].sudo()._on('connect_software')</attribute>
+        </xpath>
+    </template>
+</odoo>

@@ -10,7 +10,9 @@ Each module works without the other.
 | `twp_theme_settings_mail` | 0.1, bridge | Chatter position (Odoo's default, always below, or beside the form from 1200px). Installs itself with Discuss |
 | `twp_debrand` | 0.1, proof stage | Settings > Branding, one switch per place Odoo names itself, all on after install: an app name for the tab, dialogs and installable app, an icon and browser colour, Odoo's user menu items (with an optional support link), the login footer, the "Powered by" badge on portal and website pages, and the edition block, Enterprise upsell settings, Enterprise apps and app store menus |
 | `twp_debrand_mail` | 0.1, bridge | The email footer, the weekly update check with odoo.com, and OdooBot's name and avatar. Installs itself with Discuss |
-| `twp_debrand_portal` | 0.1, bridge | "Powered by" in the portal's document sidebar. Installs itself with Portal |
+| `twp_debrand_portal` | 0.2, bridge | "Powered by" in the portal's document sidebar, and the switch for Odoo's "Connect with your software!" offer. Installs itself with Portal |
+| `twp_debrand_sale` | 0.1, bridge | "Connect with your software!" and its window on online quotes and orders. Installs itself with Sales |
+| `twp_debrand_purchase` | 0.1, bridge | The same on online purchase orders. Installs itself with Purchase |
 | `twp_debrand_payment` | 0.1, bridge | Enterprise-only payment providers. Installs itself with Payments |
 | `twp_debrand_theme` | 0.1, bridge | The login switches on the Backend Theme's own login page. Installs itself when both are present |
 
@@ -67,10 +69,16 @@ Spreadsheet dashboards stay light: Odoo forces o-spreadsheet to a light scheme i
   sent loses an odoo.com "Odoo" badge link at send time. Links the author typed are kept, and so is
   any other `*.odoo.com` address.
 * **Website keeps its own** tab title and favicon on its pages, the login page included.
+* **With Website installed, portal pages are the website's.** A quote, order or invoice is drawn
+  inside the website's layout, so its logo, header, footer, colours and tab title are the website's,
+  set in Website. The theme does not reach them, and Website's starter content ("Your Logo", a
+  sample phone number and footer) shows until it is replaced. Every portal and website test here
+  runs with whatever apps the database has, so run them on a database with Website as well.
 
 Not covered yet: OdooBot's onboarding chat text, the digest email's app banner and tips, the
-internal-user invitation email's wording, "Odoo" in Live Chat, Peppol and Calendar texts, and the
-notification pop-ups on the public Discuss page, which loads none of the backend's scripts.
+internal-user invitation email's wording, "Odoo" in Live Chat, Peppol and Calendar texts, the
+notification pop-ups on the public Discuss page, which loads none of the backend's scripts, and
+Website's `generator` meta tag, which names Odoo in each page's source.
 
 ## Moving a look between databases
 
@@ -88,7 +96,7 @@ A bridge adds its settings to the file by extending `res.config.settings._twp_lo
 --test-tags /twp_theme_settings_mail       # chatter position reaches the client
 --test-tags /twp_theme_settings:TestCompile    # compiles the real bundles, checks dark tags and links; slow
 --test-tags twp_network                    # Google Fonts download; needs outbound HTTPS
---test-tags /twp_debrand,/twp_debrand_mail,/twp_debrand_portal,/twp_debrand_payment,/twp_debrand_theme
+--test-tags /twp_debrand,/twp_debrand_mail,/twp_debrand_portal,/twp_debrand_sale,/twp_debrand_purchase,/twp_debrand_payment,/twp_debrand_theme
 ```
 
 The preview parity test needs `node` on the server's PATH and skips itself without it. The

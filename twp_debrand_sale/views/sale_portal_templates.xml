@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        "Connect with your software!" in the sidebar of an online quote or
+        order, and the window it opens: import into Odoo, Odoo's documentation
+        and "Start on Odoo". It follows the portal bridge's switch.
+    -->
+    <template id="sale_order_portal_template" inherit_id="sale.sale_order_portal_template" name="Branding: Connect with your software">
+        <xpath expr="//button[@id='portal_connect_software_modal_btn']/.." position="attributes">
+            <attribute name="t-if" add="not env['twp.debrand'].sudo()._on('connect_software')" separator=" and "/>
+        </xpath>
+        <xpath expr="//div[@id='sale_portal_connect_software_modal']" position="attributes">
+            <attribute name="t-if">not env['twp.debrand'].sudo()._on('connect_software')</attribute>
+        </xpath>
+    </template>
+</odoo>

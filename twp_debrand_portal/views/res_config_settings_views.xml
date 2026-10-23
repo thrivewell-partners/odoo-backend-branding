@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.twp_debrand_portal</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="twp_debrand.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@name='twp_debrand_pages']" position="inside">
+                <setting id="twp_debrand_connect_software" help="The button on online quotes, sales orders and purchase orders, and its window: import the document into Odoo, a link to Odoo's documentation, and an offer to start on Odoo. The window also holds the link to download the document as UBL data, which goes with it.">
+                    <field name="twp_debrand_connect_software"/>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+</odoo>

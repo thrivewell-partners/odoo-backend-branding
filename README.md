@@ -15,6 +15,7 @@ Each module works without the other.
 | `twp_debrand_purchase` | 0.1, bridge | The same on online purchase orders. Installs itself with Purchase |
 | `twp_debrand_payment` | 0.1, bridge | Enterprise-only payment providers. Installs itself with Payments |
 | `twp_debrand_theme` | 0.1, bridge | The login switches on the Backend Theme's own login page. Installs itself when both are present |
+| `twp_report_fonts` | 0.1, proof stage | Brand fonts for PDF documents: Barlow and Barlow Semi Condensed added to the Document Layout's text font, and a Headings font beside it. Needs neither theme module |
 
 This repo is the master copy. Releases are copied into each client's code repo, which is that
 client's addons path on Oduflow. Design and decisions: ThriveWell's research doc
@@ -80,6 +81,26 @@ internal-user invitation email's wording, "Odoo" in Live Chat, Peppol and Calend
 notification pop-ups on the public Discuss page, which loads none of the backend's scripts, and
 Website's `generator` meta tag, which names Odoo in each page's source.
 
+## How the report fonts reach the PDF
+
+* **Shipped, not downloaded.** The font files and their OFL licences are in
+  `twp_report_fonts/static/fonts/<value>/`, loaded by `static/src/scss/report_fonts.scss` in
+  `web.report_assets_common`, the way Odoo serves its own report fonts. wkhtmltopdf fetches them
+  from this server, so printing never reaches Google and works offline.
+* **Chosen in Settings > Companies > Document Layout.** Text is Odoo's own `res.company.font`
+  with two values added; Headings is a new company field that falls back to the text font. Both
+  write the company style sheet (`web.asset_styles_company_report`) and show in the preview.
+* **wkhtmltopdf matches 400 and 500 as one weight** and takes the face declared last, so a text
+  family must not ship a 500 face. Barlow has none; Barlow Semi Condensed declares 500 last for
+  headings, which Odoo sets at 500.
+* **Adding a font** is its files under `static/fonts/<value>/`, its faces in `report_fonts.scss`
+  and a line in `FONTS` in `models/res_company.py`.
+* **Uninstall** puts every company back on Lato and rewrites the style sheet without the heading
+  rule, so nothing is left.
+
+A sandbox opened by hostname prints PDFs without styles until `report.url` points at the
+container, `http://127.0.0.1:8069`; that is an Oduflow fact, not this module's.
+
 ## Moving a look between databases
 
 Settings > Backend Theme > Copy and reset downloads the saved look as JSON and loads one through a
@@ -96,6 +117,7 @@ A bridge adds its settings to the file by extending `res.config.settings._twp_lo
 --test-tags /twp_theme_settings_mail       # chatter position reaches the client
 --test-tags /twp_theme_settings:TestCompile    # compiles the real bundles, checks dark tags and links; slow
 --test-tags twp_network                    # Google Fonts download; needs outbound HTTPS
+--test-tags /twp_report_fonts              # fonts offered, files shipped, compiled paths, styles, preview, uninstall
 --test-tags /twp_debrand,/twp_debrand_mail,/twp_debrand_portal,/twp_debrand_sale,/twp_debrand_purchase,/twp_debrand_payment,/twp_debrand_theme
 ```
 

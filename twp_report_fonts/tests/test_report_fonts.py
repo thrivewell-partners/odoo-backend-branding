@@ -40,8 +40,8 @@ class TestReportFonts(TransactionCase):
     def test_report_bundle_loads_the_faces_after_odoos(self):
         files, _external = self.env["ir.qweb"]._get_asset_content("web.report_assets_common")
         urls = [f["url"] for f in files]
-        self.assertIn(SCSS, urls)
-        self.assertEqual(urls.index(SCSS), urls.index("web/static/fonts/fonts.scss") + 1)
+        self.assertIn("/" + SCSS, urls)
+        self.assertEqual(urls.index("/" + SCSS), urls.index("/web/static/fonts/fonts.scss") + 1)
 
     def test_text_and_heading_reach_the_company_styles(self):
         self.company.write({"font": "Barlow", "twp_heading_font": "Barlow_Semi_Condensed"})

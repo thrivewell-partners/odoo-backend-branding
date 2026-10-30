@@ -1,6 +1,10 @@
 // Brand fonts for PDF documents. The family name is the res.company.font
 // value, as in web/static/fonts/fonts.scss. Odoo ships its own Google fonts
 // at 400 only, so bold text is synthesised; these carry real bold weights.
+// wkhtmltopdf's engine treats 400 and 500 as one weight and uses whichever
+// face is declared last. Barlow, the text font, has no 500 so text stays
+// Regular; Barlow Semi Condensed, the heading font, declares 500 last so
+// headings, which Odoo sets at 500, get Medium.
 // Relative, like Odoo's own: the bundle rewrites it from this file's folder.
 $twp-report-font-path: '../../fonts';
 
@@ -15,7 +19,6 @@ $twp-report-font-path: '../../fonts';
 
 @include twp-report-font('Barlow', 'Barlow-Regular', 400);
 @include twp-report-font('Barlow', 'Barlow-Italic', 400, italic);
-@include twp-report-font('Barlow', 'Barlow-Medium', 500);
 @include twp-report-font('Barlow', 'Barlow-Bold', 700);
 @include twp-report-font('Barlow', 'Barlow-BoldItalic', 700, italic);
 

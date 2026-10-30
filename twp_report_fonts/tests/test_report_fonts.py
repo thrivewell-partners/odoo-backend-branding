@@ -52,7 +52,7 @@ class TestReportFonts(TransactionCase):
         bundle = self.env["ir.qweb"]._get_asset_bundle("web.report_assets_common", js=False)
         css = "".join(attachment.raw.decode() for attachment in bundle.css())
         urls = set(re.findall(r"url\(['\"]?([^'\")]*twp_report_fonts[^'\")]*)", css))
-        self.assertEqual(len(urls), 9)
+        self.assertEqual(len(urls), 8)
         for url in urls:
             path = posixpath.normpath(url)
             self.assertTrue(path.startswith("/twp_report_fonts/static/fonts/"), url)

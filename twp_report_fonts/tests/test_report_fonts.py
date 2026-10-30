@@ -14,6 +14,8 @@ SCSS = "twp_report_fonts/static/src/scss/report_fonts.scss"
 class TestReportFonts(TransactionCase):
     def setUp(self):
         super().setUp()
+        # Start from Odoo's fonts whatever the database has saved.
+        self.env["res.company"].search([]).write({"font": "Lato", "twp_heading_font": False})
         self.company = self.env.company
 
     def company_styles(self):

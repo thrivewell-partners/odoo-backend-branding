@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_base_document_layout" model="ir.ui.view">
+        <field name="name">base.document.layout.form.twp_report_fonts</field>
+        <field name="model">base.document.layout</field>
+        <field name="inherit_id" ref="web.view_base_document_layout"/>
+        <field name="arch" type="xml">
+            <field name="font" position="after">
+                <field name="twp_heading_font" string="Headings" widget="selection" placeholder="Same as text"/>
+            </field>
+        </field>
+    </record>
+</odoo>

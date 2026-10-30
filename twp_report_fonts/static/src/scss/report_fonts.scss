@@ -1,0 +1,24 @@
+// Brand fonts for PDF documents. The family name is the res.company.font
+// value, as in web/static/fonts/fonts.scss. Odoo ships its own Google fonts
+// at 400 only, so bold text is synthesised; these carry real bold weights.
+$twp-report-font-path: '/twp_report_fonts/static/fonts';
+
+@mixin twp-report-font($family, $file, $weight, $style: normal) {
+    @font-face {
+        font-family: $family;
+        src: url('#{$twp-report-font-path}/#{$family}/#{$file}.ttf') format('truetype');
+        font-weight: $weight;
+        font-style: $style;
+    }
+}
+
+@include twp-report-font('Barlow', 'Barlow-Regular', 400);
+@include twp-report-font('Barlow', 'Barlow-Italic', 400, italic);
+@include twp-report-font('Barlow', 'Barlow-Medium', 500);
+@include twp-report-font('Barlow', 'Barlow-Bold', 700);
+@include twp-report-font('Barlow', 'Barlow-BoldItalic', 700, italic);
+
+@include twp-report-font('Barlow_Semi_Condensed', 'BarlowSemiCondensed-Regular', 400);
+@include twp-report-font('Barlow_Semi_Condensed', 'BarlowSemiCondensed-Medium', 500);
+@include twp-report-font('Barlow_Semi_Condensed', 'BarlowSemiCondensed-SemiBold', 600);
+@include twp-report-font('Barlow_Semi_Condensed', 'BarlowSemiCondensed-Bold', 700);

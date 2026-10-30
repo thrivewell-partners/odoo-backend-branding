@@ -1,3 +1,4 @@
+import posixpath
 import re
 
 from odoo.tests import TransactionCase, tagged
@@ -42,6 +43,19 @@ class TestReportFonts(TransactionCase):
         urls = [f["url"] for f in files]
         self.assertIn("/" + SCSS, urls)
         self.assertEqual(urls.index("/" + SCSS), urls.index("/web/static/fonts/fonts.scss") + 1)
+
+    def test_compiled_faces_point_at_the_files(self):
+        # wkhtmltopdf fetches these over HTTP; a wrong path still renders, in
+        # a fallback font, so the compiled bundle is checked here.
+        bundle = self.env["ir.qweb"]._get_asset_bundle("web.report_assets_common", js=False)
+        css = "".join(attachment.raw.decode() for attachment in bundle.css())
+        urls = set(re.findall(r"url\(['\"]?([^'\")]*twp_report_fonts[^'\")]*)", css))
+        self.assertEqual(len(urls), 9)
+        for url in urls:
+            path = posixpath.normpath(url)
+            self.assertTrue(path.startswith("/twp_report_fonts/static/fonts/"), url)
+            with file_open(path.lstrip("/"), "rb") as ttf:
+                self.assertTrue(ttf.read(4))
 
     def test_text_and_heading_reach_the_company_styles(self):
         self.company.write({"font": "Barlow", "twp_heading_font": "Barlow_Semi_Condensed"})

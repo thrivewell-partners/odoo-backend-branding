@@ -1,7 +1,8 @@
 // Brand fonts for PDF documents. The family name is the res.company.font
 // value, as in web/static/fonts/fonts.scss. Odoo ships its own Google fonts
 // at 400 only, so bold text is synthesised; these carry real bold weights.
-$twp-report-font-path: '/twp_report_fonts/static/fonts';
+// Relative, like Odoo's own: the bundle rewrites it from this file's folder.
+$twp-report-font-path: '../../fonts';
 
 @mixin twp-report-font($family, $file, $weight, $style: normal) {
     @font-face {
